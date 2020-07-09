@@ -1,0 +1,51 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="1192" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="E402" />
+          <option value="W605" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N802" />
+          <option value="N801" />
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnboundLocalVariableInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="fileSearcher.os_detector.*" />
+          <option value="fileSearcher.search_photos.counter" />
+          <option value="fileSearcher.search.counter" />
+          <option value="paramiko" />
+          <option value="ssh.getVersion.*" />
+          <option value="lantoenglol.getVersion.version" />
+          <option value="leagueoflocales.getVersion.version" />
+          <option value="leagueoflocales.league_directory.counter_c" />
+          <option value="leagueoflocales.league_directory.counter_d" />
+          <option value="leagueoflocales.league_directory.counter_e" />
+          <option value="leagueoflocales.initial_configuration.desired" />
+          <option value="leagueoflocales.getRelease.release" />
+          <option value="modules.initial_configuration.initial_configuration.is_garena" />
+          <option value="modules.initial_configuration.initial_configuration.desired" />
+          <option value="modules.initial_configuration.initial_configuration.league_directory_init_config" />
+          <option value="modules.config_gen.configuration.optimized_start" />
+          <option value="modules.config_gen.configuration.ram" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
