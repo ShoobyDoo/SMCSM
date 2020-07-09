@@ -22,3 +22,6 @@ with python
 
 On Linux, simply navigate to the directory containing the smcsm.py file, and run with
 "python3 smcsm.py"
+
+## Help
+I can offer support over at my [Discord](https://discord.gg/cuRC9pN)
