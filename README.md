@@ -1,5 +1,5 @@
 # Simple Minecraft Server Manager
- #####A cross platform server management script written entirely in Python.
+ ##### A cross platform server management script written entirely in Python.
  
 ## Features
 * Compatible with Windows and Linux
