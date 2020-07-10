@@ -13,7 +13,6 @@ from modules.clear_screen import clear_screen
 prefix = "[SMCSM] » "
 config = configparser.ConfigParser()
 yes_array = ['y', 'yes']
-no_array = ['n', 'no']
 
 
 def main():
@@ -66,7 +65,7 @@ def main():
                 time.sleep(1)
                 exit()
 
-            print("\n" + prefix + "Starting server with the most efficient configuration...")
+            print("\n" + prefix + "Starting server with the most efficient configuration...\n" + prefix, end="")
             os.system(cmd_args)
             input("\n" + prefix + "Press enter to continue.")
             clear_screen()
@@ -74,15 +73,16 @@ def main():
         elif user_input == '2':
             clear_screen()
             print("!-[Settings]-!\n\nAllocated Ram: " + configuration.ram + "GB\n\n"
-                  "[1] Reset config\n"
+                  "[1] Delete config\n"
                   "[2] Configure auto-start\n"
-                  "[3] Return to menu\n")
+                  "[3] Change ram size\n"
+                  "[4] Return to menu\n")
 
             while True:
                 user_input = input(prefix)
 
                 if user_input == "1":
-                    print(prefix + "Resetting configuration...", end="")
+                    print(prefix + "Deleting configuration...", end="")
                     os.remove("user_config.ini")
                     print("Done!\n" + prefix + "Restarting...")
                     time.sleep(0.75)
@@ -118,6 +118,21 @@ def main():
                             print()
 
                 elif user_input == "3":
+                    config.read('user_config.ini')
+
+                    print(prefix + "Enter your newly desired ram value in GB. ")
+                    user_input = input(prefix)
+
+                    config['Server Settings']['Allocated Ram'] = user_input
+                    with open("user_config.ini", "w+") as configfile:
+                        config.write(configfile)
+
+                    print(prefix + "New ram value is set to " + user_input + "GB\n")
+                    print(prefix + "Reloading configuration file...")
+                    configuration()
+                    print(prefix + "Reload complete.\n")
+
+                elif user_input == "4":
                     clear_screen()
                     break
 
