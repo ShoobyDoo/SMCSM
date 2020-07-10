@@ -13,7 +13,7 @@
 * Requires [Java](https://www.java.com/en/download/).
 * Requires [Python 3.6](https://www.python.org/downloads/) or higher.
 
-Once prerequisites are installed, extract and copy all files into your Minecraft server 
+Once prerequisites are installed, extract and copy the modules folder and the smcsm.py file into your Minecraft server 
 directory and simply run the python script.
 
 On Windows, double-clicking the script will open a terminal window by default,
