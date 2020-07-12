@@ -8,6 +8,8 @@
 * Most efficient set of arguments to run server
 * Easily handle ram dedication in script
 * Automatically choose to start server upon script launch
+* Automatically restart when server closes/crashes
+* In-app Paper.io jar download + installer
 
 ## Installation
 * Requires [Java](https://www.java.com/en/download/).
