@@ -1,3 +1,7 @@
+# Simple Minecraft Server Manager
+# By Doomlad
+# 07/01/2020
+
 import os
 import platform
 

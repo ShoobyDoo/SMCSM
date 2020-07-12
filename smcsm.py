@@ -5,10 +5,12 @@
 import os
 import configparser
 import time
+import glob
 import platform
 from modules.config_gen import configuration
 from modules.menu import menu
 from modules.clear_screen import clear_screen
+from modules.jar_downloader import get_paper, get_latest_build_version, get_server_jar_versions
 
 prefix = "[SMCSM] » "
 config = configparser.ConfigParser()
@@ -22,13 +24,20 @@ def main():
         config.read('user_config.ini')
         auto_start_status = config['Server Settings']['Auto Start']
 
+        # Check auto_start_status
         if auto_start_status == 'true':
-            user_input = '1'
 
             try:
-                print("\n" + prefix + "Press [CTRL + C] to bypass auto-start. Starting in 3 seconds...")
-                for i in range(3):
+                counter = 3
+                print("\n" + prefix + "Press [CTRL + C] to bypass auto-start. Executing in: ", end="", flush=True)
+                for i in range(counter):
+                    print(counter, end="\b", flush=True)
+                    counter -= 1
                     time.sleep(1)
+
+                print("Times up! Starting...", end="\b", flush=True)
+                print()
+                user_input = '1'
 
             except KeyboardInterrupt:
                 user_input = input("\n" + prefix)
@@ -37,6 +46,7 @@ def main():
         else:
             user_input = input("\n" + prefix)
 
+        # Start the Server
         if user_input == '1':
 
             if platform.system() == "Windows":
@@ -52,10 +62,11 @@ def main():
                     pass
 
                 else:
-                    print(prefix + "Launch.sh script not found. Generating...")
+                    print(prefix + "Launch.sh script not found. Generating...", end="")
                     os.system("touch launch.sh")
                     with open("launch.sh", "a") as launch_file:
                         launch_file.write('#!/bin/sh\ncd \"$(dirname \"$(readlink -fn \"$0\")\")\"' + "\n" + cmd_args)
+                    print("Done.")
 
                 cmd_args = "bash launch.sh"
 
@@ -67,16 +78,18 @@ def main():
 
             print("\n" + prefix + "Starting server with the most efficient configuration...\n" + prefix, end="")
             os.system(cmd_args)
-            input("\n" + prefix + "Press enter to continue.")
+            time.sleep(3)
             clear_screen()
 
+        # Settings
         elif user_input == '2':
             clear_screen()
             print("!-[Settings]-!\n\nAllocated Ram: " + configuration.ram + "GB\n\n"
                   "[1] Delete config\n"
                   "[2] Configure auto-start\n"
                   "[3] Change ram size\n"
-                  "[4] Return to menu\n")
+                  "[4] Accept EULA agreement\n"
+                  "[5] Return to menu\n")
 
             while True:
                 user_input = input(prefix)
@@ -101,6 +114,7 @@ def main():
                             config['Server Settings']['Auto Start'] = 'false'
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
+                            config.close()
                             print(prefix + "Auto-start is set to False.\n")
                         else:
                             print()
@@ -113,6 +127,7 @@ def main():
                             config['Server Settings']['Auto Start'] = 'true'
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
+                            config.close()
                             print(prefix + "Auto-start is set to True.\n")
                         else:
                             print()
@@ -133,6 +148,14 @@ def main():
                     print(prefix + "Reload complete.\n")
 
                 elif user_input == "4":
+                    print(prefix + "Opening eula.txt...", end="")
+                    with open("eula.txt", "w+") as eula_file:
+                        print("Done.")
+                        print(prefix + "Accepting eula agreement...", end="")
+                        eula_file.write('eula=true')
+                        print("Done.\n")
+
+                elif user_input == "5":
                     clear_screen()
                     break
 
@@ -142,9 +165,89 @@ def main():
                                                                                     "2. Return to menu\n")
                     continue
 
-        elif user_input == '3':
+        # Jar Downloader
+        elif user_input == "3":
+            clear_screen()
+            config.read('user_config.ini')
+            print("!-[Server Jar Manager]-!\n\nPaper is the best server software in terms of performance. \n\n"
+                  "All Paper versions: ", end="")
+            get_server_jar_versions()
+
+            while True:
+                print("\n" + prefix + "Enter your desired server version, or simply type exit to return to the main "
+                                      "menu.")
+                user_input = input(prefix)
+                if user_input == "exit":
+                    clear_screen()
+                    break
+                else:
+                    config.read("user_config.ini")
+                    latest_build = get_latest_build_version(user_input)
+                    print("\n" + prefix + "Server version: " + user_input + " Selected.")
+                    print(prefix + "Latest build for Server version: " + user_input + " is " + latest_build)
+
+                    if latest_build <= config['Server Settings']['Paper Version']:
+                        print(prefix + "Your current build is the latest build. (Current: " +
+                              config['Server Settings']['Paper Version'] + "| Latest: " + latest_build + ")")
+                        print(prefix + "No action required, you're running the latest build.")
+                        print(prefix + "Returning to main menu in 5 seconds...")
+                        time.sleep(5)
+                        clear_screen()
+                        break
+                    else:
+                        print(prefix + "Appending build version to config file...", end="")
+
+                        config['Server Settings']['Paper Version'] = latest_build
+                        with open("user_config.ini", "w+") as configfile:
+                            config.write(configfile)
+                        print("Done!")
+
+                        print(prefix + "Connecting to papermc.io to download jar file...\n")
+                        get_paper(user_input)
+                        print("\n" + prefix + "Jar downloaded successfully!")
+                        print(prefix + "Looking for existing eula.txt...", end="")
+
+                        if glob.glob("eula.txt"):
+                            print("[OK]")
+                            print(prefix + "Returning to main menu in 5 seconds...")
+                            time.sleep(5)
+                            clear_screen()
+                            break
+                        else:
+                            print("[Not Found]")
+
+                            print(prefix + "Starting server to generate eula.txt\n")
+                            os.system("java -Xms2G -Xmx2G -jar server.jar")
+
+                            print("\n" + prefix + "Eula.txt generated.")
+                            print(prefix + "Automatically open eula.txt to accept eula agreement? (Y/n)")
+
+                            user_input = input(prefix)
+
+                            if user_input.lower() in yes_array:
+                                print(prefix + "Opening eula.txt...", end="")
+                                with open("eula.txt", "w+") as eula_file:
+                                    print("Done.")
+                                    print(prefix + "Accepting eula agreement...", end="")
+                                    eula_file.write('eula=true')
+                                    print("Done.")
+
+                                print(prefix + "Eula agreement acceptance complete.")
+                                print(prefix + "Returning to main menu in 5 seconds...")
+                                time.sleep(5)
+                                clear_screen()
+                                break
+                            else:
+                                print(prefix + "Eula agreement required for server to start.")
+                                print(prefix + "Returning to main menu in 5 seconds...")
+                                time.sleep(5)
+                                clear_screen()
+                                break
+
+        # Exit program
+        elif user_input == '4':
             print(prefix + "Exiting...")
-            time.sleep(0.50)
+            time.sleep(0.75)
             exit()
 
         else:

@@ -1,3 +1,7 @@
+# Simple Minecraft Server Manager
+# By Doomlad
+# 07/01/2020
+
 import configparser
 import os
 import time
@@ -25,6 +29,7 @@ def configuration():
 
                 print(prefix + "Disabled auto-start by default. To enable, go to settings.")
 
+                config.set('Server Settings', 'Paper Version', '')
                 config.set('Server Settings', 'Auto Start', 'false')
                 ram = float(ram) * 1000
                 ram = "{:.0f}".format(ram)
@@ -57,7 +62,7 @@ def configuration():
                 print(prefix + "Writing config...", end="")
                 config.write(configfile)
                 configfile.close()
-                print("Done. \n" + prefix + "Refreshing...")
+                print("Done. \n" + prefix + "Refreshing...\n")
                 continue
 
             else:

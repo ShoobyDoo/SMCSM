@@ -1,5 +1,11 @@
-__version__ = '1.0.5'
+# Simple Minecraft Server Manager
+# By Doomlad
+# 07/01/2020
+
+__version__ = '1.0.6'
+import glob
 from modules.config_gen import configuration
+jar_files = []
 
 
 def menu():
@@ -7,7 +13,20 @@ def menu():
           "-=[Simple MCServer Manager " + __version__ + "]=-\n"
           "-----------------------------------\n\n"
           "A simple local minecraft server management tool.\n")
-    menu.menu_items = ["Start Server (" + configuration.ram + "GB)", "Settings", "Exit"]
+
+    for file in glob.glob("*.jar"):
+        jar_files.append(file)
+
+    if len(jar_files) == 0:
+        start_server = f"Start Server       (Server Jar: Not Found...)"
+    else:
+        start_server = f"Start Server       (Server Jar: {jar_files[0]}...[OK])"
+
+    settings = f"Settings           (Ram: " + configuration.ram + "GB)"
+    server_jar_manager = f"Server Jar Manager "
+    exit_code = f"Exit "
+
+    menu.menu_items = [start_server, settings, server_jar_manager, exit_code]
     menu_counter = 0
     for item in menu.menu_items:
         menu_counter += 1
