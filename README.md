@@ -1,7 +1,7 @@
 # Simple Minecraft Server Manager
  #### A cross platform server management script written entirely in Python.
  
- ![SMCSM](https://cdn.discordapp.com/attachments/584258352859709450/730592278191800380/a65c638673cc42a0f2d13c4183eae2d7.png)
+ ![SMCSM](https://cdn.discordapp.com/attachments/584258352859709450/732019809541292112/a5b301f0e1a2ce8289bd08fd45209ac5.png)
  
 ## Features
 * Compatible with Windows and Linux
