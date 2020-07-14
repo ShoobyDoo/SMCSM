@@ -14,6 +14,7 @@
 ## Installation
 * Requires [Java](https://www.java.com/en/download/).
 * Requires [Python 3.6](https://www.python.org/downloads/) or higher.
+* Requires [PyYAML](https://pypi.org/project/PyYAML/) for Server Optimizer feature
 
 Once prerequisites are installed, extract and copy the modules folder and the smcsm.py file into your Minecraft server 
 directory and simply run the python script.
