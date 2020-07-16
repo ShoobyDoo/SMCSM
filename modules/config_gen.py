@@ -5,13 +5,14 @@
 import configparser
 import os
 import time
+import glob
 
 prefix = "[SMCSM] » "
+config = configparser.ConfigParser()
 
 
 def configuration():
     while True:
-        config = configparser.ConfigParser()
         try:
             # Search for config and if not found, prompt generation of first time configuration
             print(prefix + "Opening config file...", end="")
@@ -77,3 +78,16 @@ def configuration():
             os.remove("user_config.ini")
             print("Done!\n" + prefix + "Restarting...")
             time.sleep(0.75)
+
+
+def check_server_version():
+    print(prefix + "Looking for server jar...", end="")
+    if glob.glob("*.jar"):
+        print("[OK]")
+        pass
+    else:
+        print("[NO]")
+        config.read('user_config.ini')
+        config['Server Settings']['Paper Version'] = '0'
+        with open("user_config.ini", "w+") as configfile:
+            config.write(configfile)

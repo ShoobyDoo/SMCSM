@@ -2,16 +2,16 @@
 # By Doomlad
 # 07/01/2020
 
-__version__ = '1.0.6'
+__version__ = '1.0.7'
 import glob
 from modules.config_gen import configuration
 jar_files = []
 
 
 def menu():
-    print("-----------------------------------\n" +
-          "-=[Simple MCServer Manager " + __version__ + "]=-\n"
-          "-----------------------------------\n\n"
+    print("\n[!]-----------------------------------[!]\n" +
+          "[!]-=[Simple MCServer Manager " + __version__ + "]=-[!]\n"
+          "[!]-----------------------------------[!]\n\n"
           "A simple local minecraft server management tool.\n")
 
     for file in glob.glob("*.jar"):
@@ -24,9 +24,10 @@ def menu():
 
     settings = f"Settings           (Ram: " + configuration.ram + "GB)"
     server_jar_manager = f"Server Jar Manager "
+    backups = f"Backups "
     exit_code = f"Exit "
 
-    menu.menu_items = [start_server, settings, server_jar_manager, exit_code]
+    menu.menu_items = [start_server, settings, server_jar_manager, backups, exit_code]
     menu_counter = 0
     for item in menu.menu_items:
         menu_counter += 1
