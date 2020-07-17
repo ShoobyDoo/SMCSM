@@ -9,9 +9,9 @@ jar_files = []
 
 
 def menu():
-    print("\n[!]-----------------------------------[!]\n" +
-          "[!]-=[Simple MCServer Manager " + __version__ + "]=-[!]\n"
-          "[!]-----------------------------------[!]\n\n"
+    print("\n[-]-----------------------------------[-]\n" +
+          "[|]-=[Simple MCServer Manager " + __version__ + "]=-[|]\n"
+          "[-]-----------------------------------[-]\n\n"
           "A simple local minecraft server management tool.\n")
 
     for file in glob.glob("*.jar"):

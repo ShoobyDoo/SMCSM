@@ -8,23 +8,25 @@ import os
 import platform
 
 
-def prerequisites():
+def prerequisites(package):
     if platform.system() == "Windows":
         os.system("cls")
     elif platform.system() == "Linux" or platform.system() == "Darwin":
         os.system("clear")
 
-    print("[SMCSM] » Checking for prerequisite...", end="")
+    print(f"[SMCSM] » Looking for {package}.......", end="")
+    while True:
+        try:
+            if package == 'PyYAML':
+                package = 'yaml'
 
-    package = 'yaml'
-    try:
-        print("[OK]")
-        return __import__(package)
+            return __import__(package)
 
-    except ImportError:
-        print("Not Satisfied!\n")
+        except ImportError:
+            print("[NO]\n")
+            if package == 'yaml':
+                package = 'PyYAML'
 
-        while True:
             print("You are missing the module " + package + "\n(Install once and forget about it)")
             user_input = input("\nWould you like to install it? y/n: ")
 
@@ -37,7 +39,7 @@ def prerequisites():
                     counter -= 1
                     print("Exiting in..." + str(counter), end="\r")
                     time.sleep(1)
-                exit()
+                break
 
             elif user_input == 'n':
                 print("\nThis program cannot function without " + package + ", please consider installing to continue."
@@ -47,7 +49,5 @@ def prerequisites():
                     counter -= 1
                     print("Exiting in..." + str(counter), end="\r")
                     time.sleep(1)
-                exit()
-
-            else:
-                continue
+                break
+        exit()

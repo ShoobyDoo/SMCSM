@@ -15,9 +15,9 @@ def configuration():
     while True:
         try:
             # Search for config and if not found, prompt generation of first time configuration
-            print(prefix + "Opening config file...", end="")
+            print(prefix + "Looking for config.........", end="")
             if len(config.read('user_config.ini')) == 0:
-                print("Not found!\n" + prefix + "Generating first time configuration...\n")
+                print("[NO]\n" + prefix + "Generating first time configuration...\n")
                 configfile = open("user_config.ini", "w+")
                 configfile.write("# SMCSM Configuration File #\n\n")
                 config.add_section('Server Settings')
@@ -67,7 +67,7 @@ def configuration():
                 continue
 
             else:
-                print("Found!")
+                print("[OK]")
                 configuration.ram = config['Server Settings']['Allocated Ram']
                 configuration.optimized_start = config['Server Settings']['Launch Args']
                 break
@@ -81,7 +81,7 @@ def configuration():
 
 
 def check_server_version():
-    print(prefix + "Looking for server jar...", end="")
+    print(prefix + "Looking for server.........", end="")
     if glob.glob("*.jar"):
         print("[OK]")
         pass
