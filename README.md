@@ -17,6 +17,14 @@
 * Requires [PyYAML](https://pypi.org/project/PyYAML/) for server optimizer feature
 * Requires [progress](https://pypi.org/project/progress/) for progress bar when zipping backups
 
+Ubuntu/Linux users: You need to install Python3-setuptools before you begin.
+
+On Ubuntu: sudo apt-get install python3-setuptools
+
+Installing setuptools may vary based on your distros. README will be updated to accomodate more distros at a later date.
+
+Run script with sudo python3 smcsm.py
+
 Once prerequisites are installed, extract and copy the modules folder and the smcsm.py file into your Minecraft server 
 directory and simply run the python script.
 
