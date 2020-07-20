@@ -8,7 +8,7 @@ import zipfile
 from zipfile import ZipFile
 from os.path import basename
 from datetime import datetime
-from progress.bar import Bar
+from progress.bar import ChargingBar
 
 
 def backup_manager():
@@ -27,6 +27,7 @@ def backup_manager():
     parent_dir = os.getcwd()
     zip_filename = basename(str(parent_dir)) + "_" + str(datetime.date(datetime.now())) + "_" + current_time + ".zip"
 
+    print("[SMCSM] » Warning: The SMCSM files will NOT be zipped.")
     print("[SMCSM] » Zipping content of: " + parent_dir)
     print("[SMCSM] » This might take a while. Please wait...\n")
 
@@ -36,14 +37,21 @@ def backup_manager():
 
         counter = 0
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
+            if "modules" in dir_names:
+                pass
             for file_name in file_names:
-                counter += 1
+                if file_name.endswith(".zip") or file_name.endswith(".py"):
+                    pass
+                else:
+                    counter += 1
 
-        bar = Bar("[SMCSM] » Processing Files", max=counter)
+        bar = ChargingBar("[SMCSM] » Processing Files", max=counter)
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
+            if "modules" in dir_names:
+                pass
             for file_name in file_names:
                 bar.next()
-                if file_name.endswith(".zip"):
+                if file_name.endswith(".zip") or file_name.endswith(".py"):
                     pass
                 else:
                     file_path = os.path.join(dir_path, file_name)

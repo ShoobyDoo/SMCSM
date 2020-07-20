@@ -135,6 +135,7 @@ def main():
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
                             print(prefix + "Auto-start is set to False.\n")
+
                         else:
                             print()
 
@@ -147,6 +148,7 @@ def main():
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
                             print(prefix + "Auto-start is set to True.\n")
+
                         else:
                             print()
 
@@ -209,6 +211,7 @@ def main():
                 if user_input == "exit":
                     clear_screen()
                     break
+
                 else:
                     config.read("user_config.ini")
                     latest_build = get_latest_build_version(user_input)
@@ -223,6 +226,7 @@ def main():
                         time.sleep(5)
                         clear_screen()
                         break
+
                     else:
                         print(prefix + "Appending build version to config file...", end="")
 
@@ -242,6 +246,7 @@ def main():
                             time.sleep(5)
                             clear_screen()
                             break
+
                         else:
                             print("[Not Found]")
 
@@ -266,6 +271,7 @@ def main():
                                 time.sleep(5)
                                 clear_screen()
                                 break
+
                             else:
                                 print(prefix + "Eula agreement required for server to start.")
                                 print(prefix + "Returning to main menu in 5 seconds...")
