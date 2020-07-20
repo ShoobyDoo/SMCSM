@@ -7,11 +7,14 @@
 
 ### Features
 * Compatible with Windows and Linux
-* Most efficient set of arguments to run server
+* Most efficient set of jvm arguments to run server
 * Easily handle ram dedication in script
-* Automatically choose to start server upon script launch
-* Automatically restart when server closes/crashes
+* Choose to auto-start server upon script launch
+* Auto-restart on crash/stop
 * In-app Paper.io jar download + installer
+* Rudimentary backup manager (exports to .zip)
+* Bypass auto-start to access program normally
+* Even more optimizations for bukkit, spigot, and paper.yml files
  
 ---
  
