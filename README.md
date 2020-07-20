@@ -12,18 +12,17 @@
 * Automatically choose to start server upon script launch
 * Automatically restart when server closes/crashes
 * In-app Paper.io jar download + installer
-
  
 ---
-
+ 
 ### Requirements
 * Requires [Java](https://www.java.com/en/download/).
 * Requires [Python 3.6](https://www.python.org/downloads/) or higher.
 * Requires [PyYAML](https://pypi.org/project/PyYAML/) for server optimizer feature
 * Requires [progress](https://pypi.org/project/progress/) for progress bar when zipping backups
  
- 
 ---
+
 #### Linux Installation
 *Installation steps specific environment may vary. I only cover Ubuntu here.*
 
