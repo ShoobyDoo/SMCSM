@@ -24,7 +24,7 @@
 ---
 
 #### Linux Installation
-*Installation steps specific environment may vary. I only cover Ubuntu here.*
+*Installation steps for your specific environment may vary. I only cover Ubuntu here.*
 
 Please run `sudo apt-get update` before beginning to ensure you're up to date.
 
