@@ -33,11 +33,8 @@ Please run `sudo apt-get update` before beginning to ensure you're up to date.
 
     Installation Guide (Linux):
     
-    Step 1. sudo apt-get install python3-setuptools
-    Step 2. sudo apt-get install default-jre (Most cases this will work)
-    Step 3. sudo apt-get install python3-pip
-    Step 4. sudo python3 -m pip install PyYAML
-    Step 5. sudo python3 -m pip install progress
+    Step 1. sudo apt-get install python3-setuptools default-jre python3-pip
+    Step 2. sudo python3 -m pip install PyYAML progress
   
 Once all prerequisites are satisfied, simply copy the script to your server directory and 
 run with `sudo python3 smcsm.py`
