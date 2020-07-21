@@ -29,9 +29,19 @@
 
 > #### Automatic Installation
 
-Simply head over to the [Releases](https://github.com/Doomlad/SMCSM/releases) and download the latest binary for your platform. Windows (.exe), Linux (Executable).
+#### Windows
+Step 1. Head over to the [Releases](https://github.com/Doomlad/SMCSM/releases) and download the latest `smcsm-XXX_win64.exe` file.
 
-Once downloaded, copy the file into your minecraft server folder and run.
+Step 2. Copy the file into server directory and run.
+
+#### Linux
+Step 1. Head over to the [Releases](https://github.com/Doomlad/SMCSM/releases) and download the latest `smcsm-XXX_linux` file.
+
+Step 2. Copy the file into server directory and run the file by running `./smcsm-XXX_linux` in the terminal.
+
+*Please note: There might be some issues getting the program to run initially with dependencies, so please refer to the guide below and execute Steps 1 & 2 in the terminal.*
+
+---
 
 > #### Manual Installation
 
