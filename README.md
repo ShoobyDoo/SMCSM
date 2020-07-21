@@ -25,6 +25,15 @@
 * Requires [progress](https://pypi.org/project/progress/) for progress bar when zipping backups
  
 ---
+### Installation
+
+> #### Automatic Installation
+
+Simply head over to the [Releases](https://github.com/Doomlad/SMCSM/releases) and download the latest binary for your platform. Windows (.exe), Linux (Executable).
+
+Once downloaded, copy the file into your minecraft server folder and run.
+
+> #### Manual Installation
 
 #### Linux Installation
 *Installation steps for your specific environment may vary. I only cover Ubuntu here.*
