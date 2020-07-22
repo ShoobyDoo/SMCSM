@@ -1,6 +1,6 @@
 ## Simple Minecraft Server Manager
 
-![Donate](https://img.shields.io/badge/Donate-Coffee-green?style=for-the-badge&logo=buy-me-a-coffee?link=https://www.buymeacoffee.com/doomlad&link=https://www.buymeacoffee.com/doomlad)
+[![Donate](https://img.shields.io/badge/Donate-Coffee-green?style=for-the-badge&logo=buy-me-a-coffee)](https://www.buymeacoffee.com/doomlad)
 
 #### A cross platform server management script written entirely in Python.
 
