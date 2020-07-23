@@ -48,7 +48,7 @@ Step 2. Copy the file into server directory and run the file by running `./smcsm
 
 > #### Manual Installation
 
-#### Linux Installation
+#### Linux
 *Installation steps for your specific environment may vary. I only cover Ubuntu here.*
 
 Please run `sudo apt-get update` before beginning to ensure you're up to date.
@@ -63,7 +63,7 @@ run with `sudo python3 smcsm.py`
  
 ---
 
-#### Windows Installation
+#### Windows
 
 *Please note: Python on the Windows terminal is accessed with `py` instead of `python`. In the event that*
 *you are having issues accessing python 3, try `py -3` instead.*
