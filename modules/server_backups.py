@@ -88,23 +88,26 @@ def delete_server_files():
     bar = ChargingBar("Deleting files", max=counter)
     for dir_path, dir_names, file_names in os.walk(os.getcwd()):
         for file_name in file_names:
-            if 'modules' in dir_names or '.idea' in dir_names or '.git' in dir_names:
-                dir_names.remove('modules')
-                dir_names.remove('.idea')
+            if 'modules' in dir_names:
+            	dir_names.remove('modules')
+            	
+            elif '.idea' in dir_names:
+            	dir_names.remove('.idea')
+            	
+            elif '.git' in dir_names:                
                 dir_names.remove('.git')
+                
                 for dirs in dir_names:
-                    print(prefix + "Cleaning up directories...")
                     shutil.rmtree(dirs)
             else:
                 if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
                         file_name.endswith('.ini') or file_name.endswith('.pyc') or file_name == 'LICENSE' or \
                         file_name == 'README.md':
-                    print(prefix + "Okay | " + file_name)
-
+                        file_names.remove(file_name)
+			
                 else:
                     bar.next()
                     os.remove(file_name)
-                    print(prefix + "Deleted | " + dirs)
 
     bar.finish()
     end_time = time.perf_counter()

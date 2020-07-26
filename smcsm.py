@@ -279,9 +279,8 @@ def main():
                             os.system("java -Xms2G -Xmx2G -jar server.jar")
 
                             print("\n" + prefix + "Eula.txt generated.")
-                            print(prefix + "Automatically open eula.txt to accept eula agreement? (Y/n)")
 
-                            user_input = input(prefix)
+                            user_input = "yes"
 
                             if user_input.lower() in yes_array:
                                 print(prefix + "Opening eula.txt...", end="")
@@ -354,6 +353,7 @@ def main():
                     # DEBUG: Test function to delete server files
                     if user_input == 'dsf':
                         delete_server_files()
+                        input("Press [ENTER] to return to previous menu.")
 
                 # Access last item in Array (Always going to be Return to menu)
                 elif user_input == str(len(bm_items)):

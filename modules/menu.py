@@ -7,7 +7,7 @@ import glob
 from modules.config_gen import configuration
 
 # Global vars
-__version__ = '1.0.8-pre1'  # Version
+__version__ = '1.0.8-pre2'  # Version
 pre_release = True  # Whether current version is a pre-release
 jar_files = []  # Jars array
 
