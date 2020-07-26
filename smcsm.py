@@ -114,9 +114,14 @@ def main():
 
             def settings_items():
                 settings_items.counter = 0
-                settings_items.settings_menu_items = ["Delete config", "Configure auto-start", "Change ram size",
-                                       "Accept EULA agreement",
-                                       "Server Optimization", "Return to menu"]
+                settings_items.settings_menu_items = [
+                    "Delete config",
+                    "Configure auto-start",
+                    "Change ram size",
+                    "Accept EULA agreement",
+                    "Server Optimization",
+                    "Return to menu"
+                ]
 
                 # Settings menu
                 settings_items.settings_banner = "!-[Settings]-!\n\nAllocated Ram: " + configuration.ram + "GB\n"
