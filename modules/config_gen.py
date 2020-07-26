@@ -15,7 +15,7 @@ def configuration():
     while True:
         try:
             # Search for config and if not found, prompt generation of first time configuration
-            print(prefix + "Looking for config.........", end="")
+            print(prefix + "Looking for config: ", end="")
             if len(config.read('user_config.ini')) == 0:
                 print("[NO]\n" + prefix + "Generating first time configuration...\n")
                 configfile = open("user_config.ini", "w+")
@@ -30,10 +30,18 @@ def configuration():
 
                 print(prefix + "Disabled auto-start by default. To enable, go to settings.")
 
-                config.set('Server Settings', 'Paper Version', '')
+                versions = ["1.16.1", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14",
+                            "1.13.2", "1.13.1", "1.13-pre7", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.10.2",
+                            "1.9.4", "1.8.8"]
+
+                for version in versions:
+                    config.set('Server Settings', version, '0')
+
+                # config.set('Server Settings', 'Paper Version', '')
                 config.set('Server Settings', 'Auto Start', 'false')
-                ram = float(ram) * 1000
-                ram = "{:.0f}".format(ram)
+
+                ram = "{:.0f}".format(float(ram) * 1000)
+
                 optimized_start = f'java ' \
                                   f'-Xms{str(ram)}M ' \
                                   f'-Xmx{str(ram)}M ' \
@@ -81,10 +89,11 @@ def configuration():
 
 
 def check_server_version():
-    print(prefix + "Looking for server.........", end="")
+    print(prefix + "Looking for server: ", end="")
     if glob.glob("*.jar"):
         print("[OK]")
         pass
+
     else:
         print("[NO]")
         config.read('user_config.ini')

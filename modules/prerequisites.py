@@ -4,28 +4,29 @@
 
 from setuptools.command.easy_install import main as install
 import time
-import os
-import platform
 
 
 def prerequisites(package):
-    if platform.system() == "Windows":
-        os.system("cls")
-    elif platform.system() == "Linux" or platform.system() == "Darwin":
-        os.system("clear")
 
-    print(f"[SMCSM] » Looking for {package}.......", end="")
+    if package == 'PyYAML':
+        package = 'yaml'
+
+    elif package == 'mctools[color]':
+        package = 'mctools'
+
+    print(package, end="")
     while True:
         try:
-            if package == 'PyYAML':
-                package = 'yaml'
-
             return __import__(package)
 
         except ImportError:
-            print("[NO]\n")
+            print(": [NO]\n")
+
             if package == 'yaml':
                 package = 'PyYAML'
+
+            elif package == 'mctools':
+                package = 'mctools[color]'
 
             print("You are missing the module " + package + "\n(Install once and forget about it)")
             user_input = input("\nWould you like to install it? y/n: ")

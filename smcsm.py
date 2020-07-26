@@ -2,44 +2,56 @@
 # By Doomlad
 # 07/01/2020
 
-import os
-import configparser
-import time
-import glob
-import platform
-
-from modules.config_gen import configuration, check_server_version
-from modules.menu import menu
-from modules.clear_screen import clear_screen
-from modules.jar_downloader import get_paper, get_latest_build_version, get_server_jar_versions
-from modules.prerequisites import prerequisites
+# <--------------[Imports]----------------> #
+from modules.config_gen import *
+from modules.menu import *
+from modules.clear_screen import *
+from modules.jar_downloader import *
+from modules.prerequisites import *
 
 try:
     import yaml
     from progress.bar import Bar
-    from modules.server_backups import backup_manager
-    from modules.server_optimizer import server_opt
+    from modules.server_backups import *
+    from modules.server_optimizer import *
 except ModuleNotFoundError:
     pass
+# <--------------[Imports]----------------> #
 
 prefix = "[SMCSM] » "
 config = configparser.ConfigParser()
 yes_array = ['y', 'yes']
 
 
+# Main function
 def main():
-    prerequisites("PyYAML")
-    print("[OK]")
-    prerequisites("progress")
-    print("[OK]")
-    configuration()
-    check_server_version()
-    while True:
-        menu()
-        config.read('user_config.ini')
-        auto_start_status = config['Server Settings']['Auto Start']
 
-        # Check auto_start_status
+    # Clear screen at program start
+    clear_screen()
+
+    # Smarter dependencies check
+    dependencies = ["PyYAML", "progress", "mctools[color]"]
+    print(prefix + "Looking for ", end="")
+    for depend in dependencies:
+        prerequisites(depend)
+        if depend == dependencies[-1]:
+            print(": [OK]\n")
+        else:
+            print(": [OK]", end=", ")
+
+    # Call configuration function (Check for config file)
+    configuration()
+
+    # TODO: Implement some sort of version checker against config file ???
+    check_server_version()
+
+    # Main while-loop to handle menu
+    while True:
+        menu()  # Call menu function (Prints menu)
+        config.read('user_config.ini')  # Read user config file
+        auto_start_status = config['Server Settings']['Auto Start']  # Extract the auto-start condition
+
+        # If auto-start condition is true, start program in 3 seconds
         if auto_start_status == 'true':
             try:
                 counter = 3
@@ -53,10 +65,12 @@ def main():
                 print()
                 user_input = '1'
 
+            # If user presses CTRL+C (KeyboardInterrupt), break out of auto-start
             except KeyboardInterrupt:
                 user_input = input("\n" + prefix)
                 pass
 
+        # If not, print input prompt and await user entry
         else:
             user_input = input("\n" + prefix)
 
@@ -98,15 +112,21 @@ def main():
         elif user_input == '2':
             clear_screen()
 
-            # Print settings menu
-            settings_banner = "!-[Settings]-!\n\nAllocated Ram: " + configuration.ram + "GB\n\n" \
-                              "[1] Delete config\n" \
-                              "[2] Configure auto-start\n" \
-                              "[3] Change ram size\n" \
-                              "[4] Accept EULA agreement\n" \
-                              "[5] Server Optimization\n" \
-                              "[6] Return to menu\n"
-            print(settings_banner)
+            def settings_items():
+                settings_items.counter = 0
+                settings_items.settings_menu_items = ["Delete config", "Configure auto-start", "Change ram size",
+                                       "Accept EULA agreement",
+                                       "Server Optimization", "Return to menu"]
+
+                # Settings menu
+                settings_items.settings_banner = "!-[Settings]-!\n\nAllocated Ram: " + configuration.ram + "GB\n"
+                print(settings_items.settings_banner)
+                for item in settings_items.settings_menu_items:
+                    settings_items.counter += 1
+                    print("[" + str(settings_items.counter) + "] » " + item)
+                print()
+
+            settings_items()
 
             # Menu item selection
             while True:
@@ -187,13 +207,13 @@ def main():
                     break
 
                 # [ Last Option: Exit to Main Menu ] #
-                elif user_input == "6":
+                elif user_input == str(len(settings_items.settings_menu_items)):
                     clear_screen()
                     break
 
                 else:
                     clear_screen()
-                    print(settings_banner)
+                    settings_items()
                     continue
 
         # [ Option 3: Jar Downloader ] #
@@ -201,7 +221,7 @@ def main():
             clear_screen()
             config.read('user_config.ini')
             print("!-[Server Jar Manager]-!\n\nPaper is the best server software in terms of performance. \n\n"
-                  "All Paper versions: ", end="")
+                  "All Paper versions: [", end="")
             get_server_jar_versions()
 
             while True:
@@ -289,7 +309,7 @@ def main():
                                 "Keep track of and setup automatic backups.\n"
                 print(backup_banner)
 
-                bm_items = ["Create full backup", "Return to menu"]
+                bm_items = ["Create full backup", "View/Install backup", "Return to menu"]
 
                 counter = 0
                 for items in bm_items:
@@ -304,6 +324,34 @@ def main():
                     continue
 
                 elif user_input == '2':
+                    clear_screen()
+                    print(backup_banner)
+
+                    backup_zips = []
+
+                    # For dirs, sub-dirs, and files, search for .zips
+                    for dir_path, dir_names, file_names in os.walk(os.getcwd()):
+                        if "modules" in dir_names:
+                            pass
+                        for file_name in file_names:
+                            if file_name.endswith(".zip"):
+                                backup_zips.append(file_name)
+
+                    # TODO: Add a return to previous menu item in backup_zips list ???
+                    counter = 0
+                    for zips in backup_zips:
+                        counter += 1
+                        print("[" + str(counter) + "] » " + zips)
+                    print()
+
+                    user_input = input(prefix)
+
+                    # DEBUG: Test function to delete server files
+                    if user_input == 'dsf':
+                        delete_server_files()
+
+                # Access last item in Array (Always going to be Return to menu)
+                elif user_input == str(len(bm_items)):
                     break
 
                 else:
@@ -322,6 +370,6 @@ def main():
         else:
             clear_screen()
 
-        
+
 if __name__ == '__main__':
     main()

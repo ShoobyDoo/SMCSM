@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 .idea/
 .console_history
-delete_server_files.py
 
 # C extensions
 *.so

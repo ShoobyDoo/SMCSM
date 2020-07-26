@@ -26,9 +26,11 @@ def get_server_jar_versions():
         data = json.loads(url.read().decode("utf-8"))
     counter = 0
     for versions in data['versions']:
-        if counter == 4:
-            print(versions, end="\n                    ")
+        if counter == 6:
+            print(end="\b\n                     ")
             counter = 0
         print(versions, end=", ")
         counter += 1
-    print("\b\b")
+    print("\b\b]")
+
+
