@@ -137,17 +137,20 @@ def main():
             while True:
                 user_input = input(prefix)
 
+                # =========================== #
                 # [ Option 1: Delete config ] #
+                # =========================== #
                 if user_input == "1":
                     print(prefix + "Deleting configuration...", end="")
-                    os.remove("user_config.ini")
                     print("Done!\n" + prefix + "Restarting...")
                     time.sleep(0.75)
-                    clear_screen()
                     configuration()
+                    clear_screen()
                     break
-
+                
+                # ================================== #
                 # [ Option 2: Configure auto-start ] #
+                # ================================== #
                 elif user_input == "2":
                     config.read('user_config.ini')
 
@@ -177,7 +180,9 @@ def main():
                         else:
                             print()
 
+                # ================================================= #
                 # [ Option 3: Change ram size (ram configuration) ] #
+                # ================================================= #
                 elif user_input == "3":
                     config.read('user_config.ini')
 
@@ -192,8 +197,10 @@ def main():
                     print(prefix + "Reloading configuration file...")
                     configuration()
                     print(prefix + "Reload complete.\n")
-
+                
+                # ================================ #
                 # [ Option 4: Accept EULA option ] #
+                # ================================ #
                 elif user_input == "4":
                     print(prefix + "Opening eula.txt...", end="")
                     with open("eula.txt", "w+") as eula_file:
@@ -202,7 +209,9 @@ def main():
                         eula_file.write('eula=true')
                         print("Done.\n")
 
+                # ================================= #
                 # [ Option 5: Server Optimization ] #
+                # ================================= #
                 elif user_input == "5":
                     server_opt()
                     input("\n" + prefix + "Press [ENTER] to return to the main menu.")
@@ -310,22 +319,35 @@ def main():
                 clear_screen()
                 config.read('user_config.ini')
                 backup_banner = "!-[Backup Manager]-!\n\n" \
-                                "Keep track of and setup automatic backups.\n"
+                                "Keep track of and setup automatic backups (COMING SOON...1.0.9)\n"
                 print(backup_banner)
 
-                bm_items = ["Create full backup", "View/Install backup", "Return to menu"]
+                bm_items = ["Create a backup", "Backup Operations", "Return to menu"]
 
                 counter = 0
                 for items in bm_items:
                     counter += 1
-                    print("[" + str(counter) + "] " + items)
+                    print("[" + str(counter) + "] » " + items)
                 print()
 
                 user_input = input(prefix)
                 if user_input == '1':
-                    backup_manager()
-                    input("\n" + prefix + "Press [ENTER] to continue.")
-                    continue
+                    clear_screen()
+                    print(backup_banner + "\n" +
+                          "[1] » Full backup\n"
+                          "[2] » Worlds only\n"
+                          "[3] » Back\n")
+                    user_input = input(prefix)
+                    if user_input == '1':
+                        backup_manager(full_backup=True)
+                        input("\n" + prefix + "Press [ENTER] to continue.")
+                    elif user_input == "2":
+                        backup_manager(full_backup=False)
+                        input("\n" + prefix + "Press [ENTER] to continue.")
+                    elif user_input == "3":
+                        continue
+                    else:
+                        continue
 
                 elif user_input == '2':
                     clear_screen()
@@ -341,19 +363,35 @@ def main():
                             if file_name.endswith(".zip"):
                                 backup_zips.append(file_name)
 
-                    # TODO: Add a return to previous menu item in backup_zips list ???
-                    counter = 0
-                    for zips in backup_zips:
-                        counter += 1
-                        print("[" + str(counter) + "] » " + zips)
+                    def backup_operations():
+                        counter = 0
+                        for zips in backup_zips:
+                            if zips == "zero":
+                                pass
+                            counter += 1
+                            print("[" + str(counter) + "] » " + zips)
+
+                        print(f"[{len(backup_zips) + 1}] » Back")
+
+                    backup_operations()
+
+                    if len(backup_zips) == 0:
+                        print("No backup zips were found. Returning to backup manager...")
+                        time.sleep(5)
+                        continue
                     print()
 
                     user_input = input(prefix)
+                    try:
+                        # DEBUG: Test function to delete server files
+                        if user_input == 'dsf':
+                            delete_server_files(world_only=False)
+                            input("Press [ENTER] to return to previous menu.")
+                        zip_selected = backup_zips[int(user_input) - 1]
+                        print(f"You selected {user_input} which is zip: {zip_selected}")
 
-                    # DEBUG: Test function to delete server files
-                    if user_input == 'dsf':
-                        delete_server_files()
-                        input("Press [ENTER] to return to previous menu.")
+                    except IndexError:
+                        continue
 
                 # Access last item in Array (Always going to be Return to menu)
                 elif user_input == str(len(bm_items)):
@@ -362,12 +400,10 @@ def main():
                 else:
                     continue
 
-            # print(prefix + "Returning to main menu in 5 seconds...")
-            # time.sleep(5)
             clear_screen()
 
         # [ Last Option: Exit program ] #
-        elif user_input == '5':
+        elif user_input == str(len(menu.menu_items)):
             print(prefix + "Exiting...")
             time.sleep(0.75)
             exit()
