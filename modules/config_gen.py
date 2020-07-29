@@ -8,22 +8,23 @@ import time
 import glob
 
 prefix = "[SMCSM] » "
-config = configparser.ConfigParser()
 
 
-def configuration():
+def configuration(delete=False):
+    if delete:
+        os.remove('user_config.ini')
     while True:
         try:
             # Search for config and if not found, prompt generation of first time configuration
             print(prefix + "Looking for config: ", end="")
+            config = configparser.ConfigParser()
             if len(config.read('user_config.ini')) == 0:
                 print("[NO]\n" + prefix + "Generating first time configuration...\n")
-                # try:
-                #     os.remove('user_config.ini')
-                # except:
-                #     pass
-                configfile = open("user_config.ini", "w+")
-                # configfile.write("# SMCSM Configuration File #\n\n")
+                try:
+                    os.remove("user_config.ini")
+                except:
+                    pass
+
                 config.add_section('Server Settings')
                 print(prefix + "Enter your desired ram allocation in GB. (Default is 2.0GB)")
                 ram = input(prefix)
@@ -76,37 +77,26 @@ def configuration():
 
                 config.set('Server Settings', 'Launch Args', optimized_start)
                 print(prefix + "Writing config...", end="")
-                config.write(configfile)
+
+                with open("user_config.ini", "w+") as configfile:
+                    config.write(configfile)
                 configfile.close()
+
                 print("Done. \n" + prefix + "Refreshing...\n")
                 continue
 
             else:
+                config = configparser.ConfigParser()
                 config.read('user_config.ini')
                 print("[OK]")
                 configuration.ram = config['Server Settings']['Allocated Ram']
                 configuration.optimized_start = config['Server Settings']['Launch Args']
                 break
 
-        except (KeyError, configparser.MissingSectionHeaderError, configparser.DuplicateSectionError):
+        except KeyError:
             print(prefix + "KeyError: Could not grab configuration from file. "
-                  f"Deleting broken config...", end="")
-            os.unlink("user_config.ini")
+                           f"Deleting broken config...", end="")
+            os.remove("user_config.ini")
             print("Done!\n" + prefix + "Restarting...")
             time.sleep(0.75)
             continue
-
-
-def check_server_version():
-    print(prefix + "Looking for server: ", end="")
-    if glob.glob("*.jar"):
-        print("[OK]")
-        pass
-
-    else:
-        print("[NO]")
-        config.read('user_config.ini')
-        config['Server Settings']['Paper Version'] = '0'
-        configfile = open("user_config.ini", "w+")
-        config.write(configfile)
-        configfile.close()

@@ -8,10 +8,9 @@ import glob
 import json
 from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
-config = configparser.ConfigParser()
 
 # Global vars
-__version__ = '1.0.8-pre3'  # Version
+__version__ = '1.0.8-pre4'  # Version
 
 # Cheeky one liner :^)
 pre_release = True if __version__.find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -52,17 +51,17 @@ def menu():
 
     ok_status = False
     out_of_date = False
-    mc_version = "Unknown"  # If version_history file doesn't exist
+    menu.mc_version = "Unknown"  # If version_history file doesn't exist
 
     # If there's none, print not found
     if len(jar_files) == 0:
-        start_server = f"Start Server       (Server Jar: Not Found...)"
         jar_files.append("No jar found.")
 
     # If there is version_history.json, open and get jar version. Then present user with an update.
     else:
         try:
             # Read config
+            config = configparser.ConfigParser()
             config.read("user_config.ini")
             with open("version_history.json") as vh:
                 dump = json.load(vh)
@@ -74,22 +73,22 @@ def menu():
 
             # Split further to extract minecraft version
             version = build[1].split(")")  # Returns near full version
-            mc_version = str(version[0])  # Trim remainder and assign to var
+            menu.mc_version = str(version[0])  # Trim remainder and assign to var
 
             # Split further to extract build number
             build = build[0].split("git-Paper-")  # Returns build
             paper_build = str(build[1])  # Assign build# to var
 
             # Write the version / build information to config
-            config.set('Server Settings', mc_version, paper_build)
+            config.set('Server Settings', menu.mc_version, paper_build)
 
             # Open config and write data in memory
-            configfile = open("user_config.ini", "w+")
-            config.write(configfile)
+            with open("user_config.ini", "w+") as configfile:
+                config.write(configfile)
             configfile.close()
 
             # Check for latest build based off of version selected
-            latest_build = get_latest_build_version(mc_version)
+            latest_build = get_latest_build_version(menu.mc_version)
             if int(paper_build) < int(latest_build):
                 out_of_date = True
 
@@ -102,7 +101,7 @@ def menu():
     # Small check to ensure ok_status and jar is in date
     if ok_status and not out_of_date:
         suffix = "[OK]"
-        server_jar_manager = f"Server Jar Manager (Running latest build for version {mc_version}!)"
+        server_jar_manager = f"Server Jar Manager (Running latest build for version {menu.mc_version}!)"
 
     # If not, notify user that jar is out of date
     else:
@@ -111,9 +110,13 @@ def menu():
             server_jar_manager = f"Server Jar Manager (Download Paper.io server jars from here!)"
         else:
             suffix = "[~OK]"
-            server_jar_manager = f"Server Jar Manager (Update available for version {mc_version}!)"
+            if len(jar_files) > 0 and menu.mc_version == "Unknown":
+                server_jar_manager = f"Server Jar Manager (Don't know your version! Run server once.)"
 
-    start_server = f"Start Server       (Version: {mc_version} ({jar_files[0]})...{suffix})"
+            else:
+                server_jar_manager = f"Server Jar Manager (Update available for version {menu.mc_version}!)"
+
+    start_server = f"Start Server       (Version: {menu.mc_version} ({jar_files[0]})...{suffix})"
 
     settings = f"Settings           (Ram: " + configuration.ram + "GB)"
     backups = f"Backups "

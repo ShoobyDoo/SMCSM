@@ -22,10 +22,12 @@ def get_latest_build_version(mc_version):
 
 
 def get_server_jar_versions():
+    get_server_jar_versions.paper_jars = []
     with urllib.request.urlopen("https://papermc.io/api/v1/paper/") as url:
         data = json.loads(url.read().decode("utf-8"))
     counter = 0
     for versions in data['versions']:
+        get_server_jar_versions.paper_jars.append(versions)
         if counter == 6:
             print(end="\b\n                     ")
             counter = 0

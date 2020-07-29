@@ -24,12 +24,19 @@ def backup_manager(full_backup=False):
     current_second = now.strftime("%S")
 
     if int(current_hour) > 12:
-        current_hour = int(current_hour) - 12
+        current_hour = "PM-" + str(int(current_hour) - 12)
+    else:
+        current_hour = "AM-" + str(int(current_hour) - 12)
 
     current_time = str(current_hour) + "-" + str(current_minute) + "-" + str(current_second)
 
     parent_dir = os.getcwd()
-    zip_filename = basename(str(parent_dir)) + "_" + str(datetime.date(datetime.now())) + "_" + current_time + ".zip"
+    if full_backup:
+        zip_filename = "(F) " + basename(str(parent_dir)) + "_" + str(datetime.date(datetime.now())) + "_" + \
+                       current_time + ".zip"
+    else:
+        zip_filename = "(W) " + basename(str(parent_dir)) + "_" + str(datetime.date(datetime.now())) + "_" + \
+                       current_time + ".zip"
 
     print(prefix + "Warning: The SMCSM files will NOT be zipped.")
     print(prefix + "Zipping content of: " + parent_dir)
@@ -81,13 +88,13 @@ def backup_manager(full_backup=False):
         ]
 
         world_dirs = []
-        counter = 0
+        # counter = 0
         for root, subdirs, files in os.walk(os.getcwd()):
             for folders in subdirs:
                 if folders not in non_world_dirs:
-                    if counter == 3:
-                        break
-                    counter += 1
+                    # if counter == 3:
+                    #     break
+                    # counter += 1
                     world_dirs.append(folders)
 
         world_files = 0
@@ -163,7 +170,6 @@ def delete_server_files(world_only=True):
         bar = ChargingBar(prefix + "Deleting files", max=counter)
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
             for file_name in file_names:
-                bar.next()
                 if 'modules' in dir_names:
                     dir_names.remove('modules')
 
@@ -174,15 +180,21 @@ def delete_server_files(world_only=True):
                     dir_names.remove('.git')
 
                     for dirs in dir_names:
+                        bar.next()
                         shutil.rmtree(dirs)
-                else:
-                    if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
-                            file_name.endswith('.ini') or file_name.endswith('.pyc') or file_name == 'LICENSE' or \
-                            file_name == 'README.md':
-                        file_names.remove(file_name)
 
-                    else:
-                        os.remove(file_name)
+        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
+        if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
+                file_name.endswith('.ini') or file_name.endswith('.pyc') or file_name == 'LICENSE' or \
+                file_name == 'README.md':
+            file_names.remove(file_name)
+
+        fileList = glob.glob(os.getcwd() + "\\*")
+        print(fileList)
+        for residual_file in fileList:
+            if residual_file.endswith(".json") or residual_file.endswith(".jar") or residual_file.endswith(".yml"):
+                os.remove(residual_file)
+        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
 
         bar.finish()
         end_time = time.perf_counter()
