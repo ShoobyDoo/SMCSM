@@ -10,15 +10,22 @@
 
 ### Features
 * Compatible with Windows and Linux
-* Most efficient set of jvm arguments to run server
+* Most startup script arguments to run server [(Aikars JVM Flags)](https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/).
 * Easily handle ram dedication in script
 * Choose to auto-start server upon script launch
 * Auto-restart on crash/stop
 * In-app Paper.io jar download + installer
-* Rudimentary backup manager (exports to .zip)
+* Robust and detailed backups manager
 * Bypass auto-start to access program normally
 * Even more optimizations for bukkit, spigot, and paper.yml files
- 
+* Version management for your server jars (Currently supports only paper.io jars)
+* Automatically accepts server eula + complete install of jar (All files generated at the press of an enter key :))
+
+### Upcoming Features (1.0.8+)
+* Playit.gg integration (Anyone can host their OWN Minecraft server PUBLICALLY for FREE)
+* Other various online features: In-app server list, ping statistics, potential RCON support. (Stay tuned!)
+* Install backup.zips seemlessly
+* Setup automatic backups on certain date/time
 ---
  
 ### Requirements
