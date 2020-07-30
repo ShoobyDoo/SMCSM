@@ -3,6 +3,8 @@
 # 07/01/2020
 
 # <--------------[Imports]----------------> #
+import subprocess
+from subprocess import Popen, PIPE
 from modules.config_gen import *
 from modules.menu import *
 from modules.clear_screen import *
@@ -24,7 +26,7 @@ yes_array = ['y', 'yes']
 
 # Main function
 def main():
-
+    global server
     # Clear screen at program start
     clear_screen()
 
@@ -113,17 +115,18 @@ def main():
             clear_screen()
 
             def settings_items():
-                config = configparser.ConfigParser()
-                config.read('user_config.ini')
-                with open("eula.txt", "r") as eula_file:
-                    content = eula_file.readline()
-                    if content == "eula=false":
-                        eula = "false"
-                    elif content == "eula=true":
-                        eula = "true"
-                    else:
-                        eula = "ERROR READING EULA"
-                eula_file.close()
+                try:
+                    config = configparser.ConfigParser()
+                    config.read('user_config.ini')
+                    with open("eula.txt", "r") as eula_file:
+                        content = eula_file.readline()
+                        if content == "eula=false":
+                            eula = "false"
+                        elif content == "eula=true":
+                            eula = "true"
+                    eula_file.close()
+                except Exception:
+                    eula = "ERROR READING EULA"
 
                 settings_items.counter = 0
                 settings_items.settings_menu_items = [
@@ -160,7 +163,7 @@ def main():
                     configuration()
                     clear_screen()
                     break
-                
+
                 # ================================== #
                 # [ Option 2: Configure auto-start ] #
                 # ================================== #
@@ -212,7 +215,7 @@ def main():
                     print(prefix + "Reloading configuration file...")
                     configuration()
                     print(prefix + "Reload complete.\n")
-                
+
                 # ================================ #
                 # [ Option 4: Accept EULA option ] #
                 # ================================ #
@@ -305,8 +308,23 @@ def main():
 
                             if glob.glob("eula.txt"):
                                 print("[OK]")
-                                print(prefix + "Returning to main menu in 5 seconds...")
-                                time.sleep(5)
+
+                                # ONCE EULA AGREEMENT IS ACCEPTED, START SERVER ONCE TO GENERATE FILES #
+                                print(prefix + "Starting server for the first time to generate data...")
+
+                                try:
+                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                                   stdout=PIPE)
+                                    server.communicate(input='stop\n'.encode())
+                                    server.kill()
+
+                                except:
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                                  stdin=PIPE,
+                                                  stdout=PIPE)
+                                    debug.communicate(input="stop\n".encode())
+                                    debug.kill()
+
                                 clear_screen()
                                 break
 
@@ -314,7 +332,7 @@ def main():
                                 print("[Not Found]")
 
                                 print(prefix + "Starting server to generate eula.txt\n")
-                                os.system("java -Xms2G -Xmx2G -jar server.jar")
+                                os.system("java -Xms2G -Xmx2G -jar server.jar nogui")
 
                                 print("\n" + prefix + "Eula.txt generated.")
 
@@ -328,16 +346,24 @@ def main():
                                         eula_file.write('eula=true')
                                         print("Done.")
 
-                                    print(prefix + "Eula agreement acceptance complete.")
-                                    print(prefix + "Returning to main menu in 5 seconds...")
-                                    time.sleep(5)
-                                    clear_screen()
-                                    break
+                                    print(prefix + "Eula agreement acceptance complete.\n")
 
-                                else:
-                                    print(prefix + "Eula agreement required for server to start.")
-                                    print(prefix + "Returning to main menu in 5 seconds...")
-                                    time.sleep(5)
+                                    # ONCE EULA AGREEMENT IS ACCEPTED, START SERVER ONCE TO GENERATE FILES #
+                                    print(prefix + "Starting server for the first time to generate data...")
+
+                                    try:
+                                        server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                                       stdout=PIPE)
+                                        server.communicate(input='stop\n'.encode())
+                                        server.kill()
+
+                                    except:
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                                      stdin=PIPE,
+                                                      stdout=PIPE)
+                                        debug.communicate(input="stop\n".encode())
+                                        debug.kill()
+
                                     clear_screen()
                                     break
 
@@ -357,8 +383,21 @@ def main():
 
                         if glob.glob("eula.txt"):
                             print("[OK]")
-                            print(prefix + "Returning to main menu in 5 seconds...")
-                            time.sleep(5)
+
+                            # ONCE EULA AGREEMENT IS ACCEPTED, START SERVER ONCE TO GENERATE FILES #
+                            print(prefix + "Starting server for the first time to generate data...\n")
+
+                            try:
+                                server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE, stdout=PIPE)
+                                server.communicate(input='stop\n'.encode())
+                                server.kill()
+
+                            except:
+                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"], stdin=PIPE,
+                                              stdout=PIPE)
+                                debug.communicate(input="stop\n".encode())
+                                debug.kill()
+
                             clear_screen()
                             break
 
@@ -380,16 +419,24 @@ def main():
                                     eula_file.write('eula=true')
                                     print("Done.")
 
-                                print(prefix + "Eula agreement acceptance complete.")
-                                print(prefix + "Returning to main menu in 5 seconds...")
-                                time.sleep(5)
-                                clear_screen()
-                                break
+                                print(prefix + "Eula agreement acceptance complete.\n")
 
-                            else:
-                                print(prefix + "Eula agreement required for server to start.")
-                                print(prefix + "Returning to main menu in 5 seconds...")
-                                time.sleep(5)
+                                # ONCE EULA AGREEMENT IS ACCEPTED, START SERVER ONCE TO GENERATE FILES #
+                                print(prefix + "Starting server for the first time to generate data...\n")
+
+                                try:
+                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                                   stdout=PIPE)
+                                    server.communicate(input='stop\n'.encode())
+                                    server.kill()
+
+                                except:
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                                  stdin=PIPE,
+                                                  stdout=PIPE)
+                                    debug.communicate(input="stop\n".encode())
+                                    debug.kill()
+
                                 clear_screen()
                                 break
 
@@ -414,9 +461,11 @@ def main():
 
                 user_input = input(prefix)
 
-                # DEBUG OPTION #
+                # DEBUG OPTION (OUTLINE FOR FILE DELETION WHEN INSTALLING BACKUPS) #
                 if user_input == 'dsf':
                     delete_server_files(world_only=False)
+                    input("ENTER")
+                # DEBUG OPTION (OUTLINE FOR FILE DELETION WHEN INSTALLING BACKUPS) #
 
                 if user_input == '1':
                     while True:
@@ -466,7 +515,7 @@ def main():
                                 counter += 1
 
                                 if zips.startswith("(W) "):
-                                    backup_type = r" | Type:[World Only] "
+                                    backup_type = r" | Type:[Worlds Only]"
                                 elif zips.startswith("(F) "):
                                     backup_type = r" | Type:[Full Backup]"
                                 else:
@@ -521,7 +570,12 @@ def main():
                                 zip_metadata = f" | Date:[{zip_month} {zip_day}, {zip_year}]" \
                                                f" | Time:[{zip_hour}:{zip_minute} {zip_time_period}]"
 
-                                print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata)
+                                if zips == backup_zips[len(backup_zips) - 1]:
+                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata + " (Latest)")
+                                else:
+                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata)
+
+                            print()
 
                             if len(backup_zips) == 0:
                                 print("[!] » No backup zips were found.\n")

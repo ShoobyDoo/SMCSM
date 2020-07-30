@@ -10,7 +10,7 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.8-pre4'  # Version
+__version__ = '1.0.8'  # Version (1.0.8-pre4)
 
 # Cheeky one liner :^)
 pre_release = True if __version__.find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -52,6 +52,11 @@ def menu():
     ok_status = False
     out_of_date = False
     menu.mc_version = "Unknown"  # If version_history file doesn't exist
+
+    # If No Jar found AND there's a valid jar in the list, remove the No Jar found entry
+    for jar in jar_files:
+        if jar == "No jar found." and len(jar_files) > 1:
+            jar_files.remove(jar)
 
     # If there's none, print not found
     if len(jar_files) == 0:

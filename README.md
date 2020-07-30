@@ -4,7 +4,7 @@
 
 #### A cross platform server management script written entirely in Python.
 
-![SMCSM](https://cdn.discordapp.com/attachments/584258352859709450/733456193372291133/6284fbc66f7d7602d8ce15dd5819c9d7.png)
+![SMCSM](https://cdn.discordapp.com/attachments/584258352859709450/738204151544021044/7db19f90b2aff965cc82e20d068134c9.png)
  
 ---
 

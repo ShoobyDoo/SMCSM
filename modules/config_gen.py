@@ -20,10 +20,9 @@ def configuration(delete=False):
             config = configparser.ConfigParser()
             if len(config.read('user_config.ini')) == 0:
                 print("[NO]\n" + prefix + "Generating first time configuration...\n")
-                try:
-                    os.remove("user_config.ini")
-                except:
-                    pass
+
+                config.add_section('Config')
+                config.set('Config', 'Version', '0.1')
 
                 config.add_section('Server Settings')
                 print(prefix + "Enter your desired ram allocation in GB. (Default is 2.0GB)")

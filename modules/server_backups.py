@@ -92,9 +92,6 @@ def backup_manager(full_backup=False):
         for root, subdirs, files in os.walk(os.getcwd()):
             for folders in subdirs:
                 if folders not in non_world_dirs:
-                    # if counter == 3:
-                    #     break
-                    # counter += 1
                     world_dirs.append(folders)
 
         world_files = 0
@@ -166,10 +163,13 @@ def delete_server_files(world_only=True):
                     pass
                 else:
                     counter += 1
-
-        bar = ChargingBar(prefix + "Deleting files", max=counter)
+        print()
+        bar = ChargingBar(prefix + "Deleting files")
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
             for file_name in file_names:
+                if file_name == ".console_history" or file_name.endswith(".txt") or file_name.endswith(".properties"):
+                    os.remove(file_name)
+
                 if 'modules' in dir_names:
                     dir_names.remove('modules')
 
@@ -183,23 +183,35 @@ def delete_server_files(world_only=True):
                         bar.next()
                         shutil.rmtree(dirs)
 
+        bar.finish()
+        end_time = time.perf_counter()
+        print("\n" + prefix + f"File deletion took {end_time - start_time:0.2f} seconds to complete.\n")
+
+        start_time = time.perf_counter()
         # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
         if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
                 file_name.endswith('.ini') or file_name.endswith('.pyc') or file_name == 'LICENSE' or \
                 file_name == 'README.md':
             file_names.remove(file_name)
+        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
 
         fileList = glob.glob(os.getcwd() + "\\*")
-        print(fileList)
+
+        counter = 0
         for residual_file in fileList:
             if residual_file.endswith(".json") or residual_file.endswith(".jar") or residual_file.endswith(".yml"):
+                counter += 1
+
+        bar = ChargingBar(prefix + "Cleaning up", max=counter)
+        for residual_file in fileList:
+            if residual_file.endswith(".json") or residual_file.endswith(".jar") or residual_file.endswith(".yml"):
+                bar.next()
                 os.remove(residual_file)
-        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
 
         bar.finish()
         end_time = time.perf_counter()
-
-        print("\n" + prefix + f"File deletion took {end_time - start_time:0.2f} seconds to complete.")
+        print("\n" + prefix + f"Clean up process took {end_time - start_time:0.2f} seconds to complete.")
+        print()
 
 
 def extract_backup():
