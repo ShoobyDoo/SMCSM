@@ -10,10 +10,10 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.8'  # Version (1.0.8-pre4)
+__version__ = '1.0.9-Pre1'  # Version (1.0.8-pre4)
 
 # Cheeky one liner :^)
-pre_release = True if __version__.find("-pre") != -1 else False  # Whether current version is a pre-release
+pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
 # else: pre_release = False
 
 jar_files = []  # Jars array

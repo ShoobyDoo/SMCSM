@@ -149,22 +149,33 @@ def delete_server_files(world_only=True):
         bar.finish()
         end_time = time.perf_counter()
 
-        print(f"File deletion took {end_time - start_time:0.2f} seconds to complete.")
+        print(f"World deletion took {end_time - start_time:0.2f} seconds to complete.")
 
     else:
-        start_time = time.perf_counter()
+        # <------[DELETE SERVER FILES]------> #
+        start_time_d = time.perf_counter()
 
         counter = 0
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
-            if "modules" in dir_names:
-                pass
             for file_name in file_names:
-                if file_name.endswith(".zip") or file_name.endswith(".py"):
-                    pass
-                else:
-                    counter += 1
+                if file_name == ".console_history" or file_name.endswith(".txt") or file_name.endswith(".properties"):
+                    os.remove(file_name)
+
+                if 'modules' in dir_names:
+                    dir_names.remove('modules')
+
+                elif '.idea' in dir_names:
+                    dir_names.remove('.idea')
+
+                elif '.git' in dir_names:
+                    dir_names.remove('.git')
+
+                    for dirs in dir_names:
+                        counter += 1
+
         print()
-        bar = ChargingBar(prefix + "Deleting files")
+
+        bar = ChargingBar(prefix + "Deleting files", max=counter)
         for dir_path, dir_names, file_names in os.walk(os.getcwd()):
             for file_name in file_names:
                 if file_name == ".console_history" or file_name.endswith(".txt") or file_name.endswith(".properties"):
@@ -184,9 +195,11 @@ def delete_server_files(world_only=True):
                         shutil.rmtree(dirs)
 
         bar.finish()
-        end_time = time.perf_counter()
-        print("\n" + prefix + f"File deletion took {end_time - start_time:0.2f} seconds to complete.\n")
+        end_time_d = time.perf_counter()
 
+        # <------[DELETE SERVER FILES]------> #
+
+        # <------[CLEANUP SERVER FILES]------> #
         start_time = time.perf_counter()
         # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
         if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
@@ -211,9 +224,11 @@ def delete_server_files(world_only=True):
         bar.finish()
         end_time = time.perf_counter()
         print("\n" + prefix + f"Clean up process took {end_time - start_time:0.2f} seconds to complete.")
-        print()
+
+        # <------[CLEANUP SERVER FILES]------> #
 
 
-def extract_backup():
-    print("")
-    user_input = input(prefix)
+def extract_backup(zip_file):
+    print(prefix + f"Extracting contents of {zip_file}...")
+    with zipfile.ZipFile(zip_file, 'r') as backup_zip:
+        backup_zip.extractall(os.getcwd())

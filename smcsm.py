@@ -3,12 +3,12 @@
 # 07/01/2020
 
 # <--------------[Imports]----------------> #
-import subprocess
 from subprocess import Popen, PIPE
-from modules.config_gen import *
-from modules.menu import *
+
 from modules.clear_screen import *
+from modules.config_gen import *
 from modules.jar_downloader import *
+from modules.menu import *
 from modules.prerequisites import *
 
 try:
@@ -26,7 +26,6 @@ yes_array = ['y', 'yes']
 
 # Main function
 def main():
-    global server
     # Clear screen at program start
     clear_screen()
 
@@ -125,8 +124,8 @@ def main():
                         elif content == "eula=true":
                             eula = "true"
                     eula_file.close()
-                except Exception:
-                    eula = "ERROR READING EULA"
+                except FileNotFoundError:
+                    eula = "eula.txt not found"
 
                 settings_items.counter = 0
                 settings_items.settings_menu_items = [
@@ -543,29 +542,29 @@ def main():
                                 # <----[Formatted Time]----> #
 
                                 if zip_month == "01":
-                                    zip_month = "January"
+                                    zip_month = "  January"
                                 elif zip_month == "02":
-                                    zip_month = "February"
+                                    zip_month = " February"
                                 elif zip_month == "03":
-                                    zip_month = "March"
+                                    zip_month = "    March"
                                 elif zip_month == "04":
-                                    zip_month = "April"
+                                    zip_month = "    April"
                                 elif zip_month == "05":
-                                    zip_month = "May"
+                                    zip_month = "      May"
                                 elif zip_month == "06":
-                                    zip_month = "June"
+                                    zip_month = "     June"
                                 elif zip_month == "07":
-                                    zip_month = "July"
+                                    zip_month = "     July"
                                 elif zip_month == "08":
-                                    zip_month = "August"
+                                    zip_month = "   August"
                                 elif zip_month == "09":
                                     zip_month = "September"
                                 elif zip_month == "10":
-                                    zip_month = "October"
+                                    zip_month = "  October"
                                 elif zip_month == "11":
-                                    zip_month = "November"
+                                    zip_month = " November"
                                 elif zip_month == "12":
-                                    zip_month = "December"
+                                    zip_month = " December"
 
                                 zip_metadata = f" | Date:[{zip_month} {zip_day}, {zip_year}]" \
                                                f" | Time:[{zip_hour}:{zip_minute} {zip_time_period}]"
@@ -602,14 +601,45 @@ def main():
 
                                     user_input = input(prefix)
 
+                                    # TODO: INSTALL UPDATE BASED ON FULL/WORLD
                                     if user_input == "1":
-                                        input("INCOMPLETE FEATURE. FINISHED IN 1.0.9, STAY TUNED (PRESS ENTER)")
-                                        pass
-                                        # TODO: INSTALL UPDATE BASED ON FULL/WORLD
+                                        print(prefix + "[!] POSSIBLE LOSS OF DATA BEYOND THIS POINT [!]")
+                                        print(prefix + "Are you sure you want to install this backup? (y/N)")
+                                        user_input = input(prefix)
+
+                                        print()  # Space after input prompt for extraction information
+
+                                        if user_input.lower() == "y":
+                                            if zip_selected.startswith("(W)"):
+                                                delete_server_files(world_only=True)
+                                                extract_backup(zip_selected)
+
+                                            elif zip_selected.startswith("(F)"):
+                                                delete_server_files(world_only=False)
+                                                extract_backup(zip_selected)
+
+                                            else:
+                                                print(prefix + f"{zip_selected} is not in the supported SMCSM format.")
+
+                                            print("Done!")
+                                            print(prefix + "Returning to previous menu in 3 seconds...")
+                                            time.sleep(3)
+                                            break
+
+                                        elif user_input.lower() == "n":
+                                            print(prefix + "No changes were made.")
+                                            print(prefix + "Returning to previous menu in 3 seconds...")
+                                            time.sleep(3)
+                                            break
+
+                                        else:
+                                            print(prefix + "Invalid input.")
+                                            continue
 
                                     elif user_input == "2":
                                         print(prefix + "Are you sure you want to delete this backup? (y/N)")
                                         user_input = input(prefix)
+
                                         if user_input.lower() == "y":
                                             print(prefix + "Deleting...", end="")
                                             os.remove(zip_selected)
@@ -619,6 +649,7 @@ def main():
                                             break
 
                                         else:
+                                            print(prefix + "Invalid input.")
                                             continue
 
                                     elif user_input == "3":
