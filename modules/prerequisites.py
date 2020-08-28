@@ -6,7 +6,7 @@ from setuptools.command.easy_install import main as install
 import time
 
 
-def prerequisites(package):
+def check_prerequisite(package):
 
     if package == 'PyYAML':
         package = 'yaml'

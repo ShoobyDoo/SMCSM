@@ -200,13 +200,13 @@ def delete_server_files(world_only=True):
         # <------[DELETE SERVER FILES]------> #
 
         # <------[CLEANUP SERVER FILES]------> #
+
         start_time = time.perf_counter()
-        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
+
         if file_name.endswith('.py') or file_name.startswith('.git') or file_name.startswith('.idea') or \
                 file_name.endswith('.ini') or file_name.endswith('.pyc') or file_name == 'LICENSE' or \
                 file_name == 'README.md':
             file_names.remove(file_name)
-        # SPAGHETTI CODE, BIG YIKES TO ANYONE READING THIS #
 
         fileList = glob.glob(os.getcwd() + "\\*")
 

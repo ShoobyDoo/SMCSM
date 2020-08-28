@@ -11,6 +11,9 @@ prefix = "[SMCSM] » "
 
 
 def configuration(delete=False):
+
+    configuration.config_version = 1.1
+
     if delete:
         os.remove('user_config.ini')
     while True:
@@ -22,11 +25,12 @@ def configuration(delete=False):
                 print("[NO]\n" + prefix + "Generating first time configuration...\n")
 
                 config.add_section('Config')
-                config.set('Config', 'Version', '0.1')
+                config.set('Config', 'Version', str(configuration.config_version))
 
                 config.add_section('Server Settings')
                 print(prefix + "Enter your desired ram allocation in GB. (Default is 2.0GB)")
                 ram = input(prefix)
+
                 if not ram:
                     config.set('Server Settings', 'Allocated Ram', '2')
                 else:
@@ -34,12 +38,13 @@ def configuration(delete=False):
 
                 print(prefix + "Disabled auto-start by default. To enable, go to settings.")
 
+                config.add_section('Versions')
                 versions = ["1.16.1", "1.15.2", "1.15.1", "1.15", "1.14.4", "1.14.3", "1.14.2", "1.14.1", "1.14",
                             "1.13.2", "1.13.1", "1.13-pre7", "1.13", "1.12.2", "1.12.1", "1.12", "1.11.2", "1.10.2",
                             "1.9.4", "1.8.8"]
 
                 for version in versions:
-                    config.set('Server Settings', version, '0')
+                    config.set('Versions', version, '0')
 
                 # config.set('Server Settings', 'Paper Version', '')
                 config.set('Server Settings', 'Auto Start', 'false')
@@ -85,9 +90,22 @@ def configuration(delete=False):
                 continue
 
             else:
-                config = configparser.ConfigParser()
-                config.read('user_config.ini')
-                print("[OK]")
+                try:
+                    config = configparser.ConfigParser()
+                    config.read('user_config.ini')
+                    current_config_version = config['Config']['Version']
+
+                    if float(current_config_version) < configuration.config_version:
+                        configuration.config_status = "Update here!"
+                        print("[OUT OF DATE]")
+                    else:
+                        configuration.config_status = "Up to Date!"
+                        print("[OK]")
+
+                except KeyError:
+                    print("[VERSION ERROR: Is config file old?]")
+                    configuration.config_status = "Out of Date!"
+
                 configuration.ram = config['Server Settings']['Allocated Ram']
                 configuration.optimized_start = config['Server Settings']['Launch Args']
                 break

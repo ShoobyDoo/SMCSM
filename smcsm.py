@@ -3,21 +3,29 @@
 # 07/01/2020
 
 # <--------------[Imports]----------------> #
+
+import configparser
+import time
+import platform
+import os
+import glob
+
 from subprocess import Popen, PIPE
 
-from modules.clear_screen import *
-from modules.config_gen import *
-from modules.jar_downloader import *
-from modules.menu import *
-from modules.prerequisites import *
+from modules.clear_screen import clear_screen
+from modules.config_gen import configuration
+from modules.jar_downloader import get_paper, get_latest_build_version, get_server_jar_versions
+from modules.menu import print_menu
+from modules.prerequisites import check_prerequisite
 
 try:
     import yaml
     from progress.bar import Bar
-    from modules.server_backups import *
-    from modules.server_optimizer import *
+    from modules.server_backups import backup_manager, extract_backup, delete_server_files
+    from modules.server_optimizer import server_opt
 except ModuleNotFoundError:
     pass
+
 # <--------------[Imports]----------------> #
 
 prefix = "[SMCSM] » "
@@ -33,9 +41,9 @@ def main():
     dependencies = ["PyYAML", "progress", "mctools[color]"]
     print(prefix + "Looking for ", end="")
     for depend in dependencies:
-        prerequisites(depend)
+        check_prerequisite(depend)
         if depend == dependencies[-1]:
-            print(": [OK]\n")
+            print(": [OK]")
         else:
             print(": [OK]", end=", ")
 
@@ -47,7 +55,7 @@ def main():
 
     # Main while-loop to handle menu
     while True:
-        menu()  # Call menu function (Prints menu)
+        print_menu()  # Call menu function (Prints menu)
         config = configparser.ConfigParser()
         config.read('user_config.ini')  # Read user config file
         auto_start_status = config['Server Settings']['Auto Start']  # Extract the auto-start condition
@@ -273,6 +281,10 @@ def main():
                     print(prefix + "Latest build for Server version: " + user_input + " is " + latest_build)
 
                     try:
+                        if "No jar found." in print_menu.jar_files:
+                            config['Server Settings'][user_input] = "0"
+                            with open("user_config.ini", "w+") as configfile:
+                                config.write(configfile)
                         if latest_build <= config['Server Settings'][user_input]:
                             print(prefix + "Your current build is the latest build. [Current: " +
                                   config['Server Settings'][user_input] + " | Latest: " + latest_build + "]")
@@ -330,8 +342,20 @@ def main():
                             else:
                                 print("[Not Found]")
 
-                                print(prefix + "Starting server to generate eula.txt\n")
-                                os.system("java -Xms2G -Xmx2G -jar server.jar nogui")
+                                print(prefix + "Starting server to generate eula.txt...")
+
+                                try:
+                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                                   stdout=PIPE)
+                                    server.communicate(input='stop\n'.encode())
+                                    server.kill()
+
+                                except:
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                                  stdin=PIPE,
+                                                  stdout=PIPE)
+                                    debug.communicate(input="stop\n".encode())
+                                    debug.kill()
 
                                 print("\n" + prefix + "Eula.txt generated.")
 
@@ -403,8 +427,20 @@ def main():
                         else:
                             print("[Not Found]")
 
-                            print(prefix + "Starting server to generate eula.txt\n")
-                            os.system("java -Xms2G -Xmx2G -jar server.jar")
+                            print(prefix + "Starting server to generate eula.txt")
+
+                            try:
+                                server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                               stdout=PIPE)
+                                server.communicate(input='stop\n'.encode())
+                                server.kill()
+
+                            except:
+                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                              stdin=PIPE,
+                                              stdout=PIPE)
+                                debug.communicate(input="stop\n".encode())
+                                debug.kill()
 
                             print("\n" + prefix + "Eula.txt generated.")
 
@@ -510,7 +546,9 @@ def main():
 
                         def existing_backups():
                             counter = 0
+
                             for zips in backup_zips:
+
                                 counter += 1
 
                                 if zips.startswith("(W) "):
@@ -569,8 +607,9 @@ def main():
                                 zip_metadata = f" | Date:[{zip_month} {zip_day}, {zip_year}]" \
                                                f" | Time:[{zip_hour}:{zip_minute} {zip_time_period}]"
 
-                                if zips == backup_zips[len(backup_zips) - 1]:
-                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata + " (Latest)")
+                                if zips == backup_zips[-1]:
+                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata +
+                                          " (Latest)")
                                 else:
                                     print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata)
 
@@ -619,7 +658,10 @@ def main():
                                                 extract_backup(zip_selected)
 
                                             else:
-                                                print(prefix + f"{zip_selected} is not in the supported SMCSM format.")
+                                                print(prefix + f"{zip_selected} is not in the supported SMCSM format.\n"
+                                                               f"Please add (F) to the front of the file if it's a full"
+                                                               f"backup.\nPlease add (W) to the front of the file it's"
+                                                               f"just a world backup.")
 
                                             print("Done!")
                                             print(prefix + "Returning to previous menu in 3 seconds...")
@@ -644,8 +686,8 @@ def main():
                                             print(prefix + "Deleting...", end="")
                                             os.remove(zip_selected)
                                             print("Done!")
-                                            print(prefix + "Returning to previous menu in 3 seconds...")
-                                            time.sleep(3)
+                                            print(prefix + "Returning to previous menu...")
+                                            time.sleep(1)
                                             break
 
                                         else:
@@ -676,7 +718,7 @@ def main():
             clear_screen()
 
         # [ Last Option: Exit program ] #
-        elif user_input == str(len(menu.menu_items)):
+        elif user_input == str(len(print_menu.menu_items)):
             print(prefix + "Exiting...")
             time.sleep(0.75)
             exit()
