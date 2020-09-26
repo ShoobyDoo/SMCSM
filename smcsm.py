@@ -142,11 +142,19 @@ def main():
                     "Change ram size       | Current: " + config['Server Settings']['Allocated Ram'] + "GB",
                     "Accept EULA agreement | Current: " + eula,
                     "Server Optimization",
+                    "Config Update         | Current: " + configuration.config_status,
                     "Return to menu"
                 ]
 
                 # Settings menu
                 settings_items.settings_banner = "!-[Settings]-!\n"
+
+                if configuration.config_status == "Update here!" or configuration.config_status == "Out of Date!":
+                    settings_items.settings_banner = "!-[Settings]-!\n\n" \
+                        "[!] Your config file is outdated! I might add new items to the config file\n" \
+                        "[!] that older config file versions might not have, which would result in\n" \
+                        "[!] SMCSM crashing. Please update your config file to the latest version.\n"
+
                 print(settings_items.settings_banner)
                 for item in settings_items.settings_menu_items:
                     settings_items.counter += 1
@@ -179,7 +187,7 @@ def main():
                     config.read('user_config.ini')
 
                     if auto_start_status == 'true':
-                        print(prefix + "Current status is True. Would you like to disable? (Y)es/(N)o ")
+                        print(prefix + "Would you like to disable? (Y)es/(N)o ")
                         user_input = input(prefix)
 
                         if user_input.lower() in yes_array:
@@ -192,7 +200,7 @@ def main():
                             print()
 
                     elif auto_start_status == 'false':
-                        print(prefix + "Current status is False. Would you like to enable? (Y)es/(N)o ")
+                        print(prefix + "Would you like to enable? (Y)es/(N)o ")
                         user_input = input(prefix)
 
                         if user_input.lower() in yes_array:
@@ -241,6 +249,18 @@ def main():
                 elif user_input == "5":
                     server_opt()
                     input("\n" + prefix + "Press [ENTER] to return to the main menu.")
+                    # print(prefix + "Returning to main menu in 5 seconds...")
+                    # time.sleep(5)
+                    clear_screen()
+                    break
+
+                # ================================= #
+                # [ Option 6:  ] #
+                # ================================= #
+                elif user_input == "6":
+                    print("Backing up current config file...")
+                    os.rename("user_config.ini", f"user_config_{configuration.config_version}_BACKUP.ini")
+                    os.system("pause")
                     # print(prefix + "Returning to main menu in 5 seconds...")
                     # time.sleep(5)
                     clear_screen()

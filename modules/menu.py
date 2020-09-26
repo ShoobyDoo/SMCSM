@@ -123,9 +123,9 @@ def print_menu():
             else:
                 server_jar_manager = f"Server Jar Manager (Update available for version {print_menu.mc_version}!)"
 
-    start_server = f"Start Server       (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
+    start_server = f"Start Server ({configuration.ram}GB) (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
 
-    settings = f"Settings           (Config: {configuration.config_status}) | (Ram: {configuration.ram}GB)"
+    settings = f"Settings           (Config: {configuration.config_status})"
     backups = f"Backups "
     exit_code = f"Exit "
 
