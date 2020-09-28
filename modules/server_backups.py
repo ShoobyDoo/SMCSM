@@ -26,7 +26,7 @@ def backup_manager(full_backup=False):
     if int(current_hour) > 12:
         current_hour = "PM-" + str(int(current_hour) - 12)
     else:
-        current_hour = "AM-" + str(int(current_hour) - 12)
+        current_hour = "AM-" + str(int(current_hour))
 
     current_time = str(current_hour) + "-" + str(current_minute) + "-" + str(current_second)
 
@@ -231,4 +231,17 @@ def delete_server_files(world_only=True):
 def extract_backup(zip_file):
     print(prefix + f"Extracting contents of {zip_file}...")
     with zipfile.ZipFile(zip_file, 'r') as backup_zip:
-        backup_zip.extractall(os.getcwd())
+        backup_zip.extractall()
+
+    os.chdir("../SMCSM")
+    print(os.getcwd())
+    backup_files = os.listdir("SMCSM")
+    os.chdir("./")
+    print(os.getcwd())
+    for file in backup_files:
+        print(prefix + "Trying: " + file)
+        # try:
+        #
+        # except shutil.Error:
+        #     print(prefix + f"Could not copy file: {file}")
+    os.system("pause")

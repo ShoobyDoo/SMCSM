@@ -142,7 +142,8 @@ def main():
                     "Change ram size       | Current: " + config['Server Settings']['Allocated Ram'] + "GB",
                     "Accept EULA agreement | Current: " + eula,
                     "Server Optimization",
-                    "Config Update         | Current: " + configuration.config_status,
+                    "Config Update         | Current: (" + configuration.current_config_version + ") " +
+                    configuration.config_status,
                     "Return to menu"
                 ]
 
@@ -150,7 +151,8 @@ def main():
                 settings_items.settings_banner = "!-[Settings]-!\n"
 
                 if configuration.config_status == "Update here!" or configuration.config_status == "Out of Date!":
-                    settings_items.settings_banner = "!-[Settings]-!\n\n" \
+                    settings_items.settings_banner = \
+                        "!-[Settings]-!\n\n" \
                         "[!] Your config file is outdated! I might add new items to the config file\n" \
                         "[!] that older config file versions might not have, which would result in\n" \
                         "[!] SMCSM crashing. Please update your config file to the latest version.\n"
@@ -255,12 +257,14 @@ def main():
                     break
 
                 # ================================= #
-                # [ Option 6:  ] #
+                # [ Option 6: Config file manager ] #
                 # ================================= #
                 elif user_input == "6":
-                    print("Backing up current config file...")
+                    print(prefix + "Backing up current config file...", end="")
                     os.rename("user_config.ini", f"user_config_{configuration.config_version}_BACKUP.ini")
-                    os.system("pause")
+                    print("Done!")
+                    print(prefix + "Running reconfiguration on latest config file version...")
+                    configuration()
                     # print(prefix + "Returning to main menu in 5 seconds...")
                     # time.sleep(5)
                     clear_screen()
@@ -670,11 +674,17 @@ def main():
 
                                         if user_input.lower() == "y":
                                             if zip_selected.startswith("(W)"):
-                                                delete_server_files(world_only=True)
+                                                try:
+                                                    delete_server_files(world_only=True)
+                                                except:
+                                                    pass
                                                 extract_backup(zip_selected)
 
                                             elif zip_selected.startswith("(F)"):
-                                                delete_server_files(world_only=False)
+                                                try:
+                                                    delete_server_files(world_only=False)
+                                                except:
+                                                    pass
                                                 extract_backup(zip_selected)
 
                                             else:

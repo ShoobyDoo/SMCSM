@@ -93,9 +93,9 @@ def configuration(delete=False):
                 try:
                     config = configparser.ConfigParser()
                     config.read('user_config.ini')
-                    current_config_version = config['Config']['Version']
+                    configuration.current_config_version = config['Config']['Version']
 
-                    if float(current_config_version) < configuration.config_version:
+                    if float(configuration.current_config_version) < configuration.config_version:
                         configuration.config_status = "Update here!"
                         print("[OUT OF DATE]")
                     else:
