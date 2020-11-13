@@ -38,7 +38,7 @@ def main():
     clear_screen()
 
     # Smarter dependencies check
-    dependencies = ["PyYAML", "progress", "mctools[color]"]
+    dependencies = ["PyYAML", "progress"]
     print(prefix + "Looking for ", end="")
     for depend in dependencies:
         check_prerequisite(depend)
