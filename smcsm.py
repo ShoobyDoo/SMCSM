@@ -34,6 +34,7 @@ yes_array = ['y', 'yes']
 
 # Main function
 def main():
+    os.system("title SMCSM - Simple Minecraft Server Manager!")
     # Clear screen at program start
     clear_screen()
 
@@ -88,6 +89,8 @@ def main():
 
             if platform.system() == "Windows":
                 print(prefix + "Current platform is Windows.")
+                if "server.jar" in configuration.optimized_start:
+                    configuration.optimized_start.replace("server.jar", print_menu.jar_files[0])
                 cmd_args = f'cmd /c "{str(configuration.optimized_start)}"'
 
             elif platform.system() == "Linux" or platform.system() == "Darwin":
@@ -123,6 +126,7 @@ def main():
 
             def settings_items():
                 try:
+                    eula = "false"
                     config = configparser.ConfigParser()
                     config.read('user_config.ini')
                     with open("eula.txt", "r") as eula_file:
@@ -260,13 +264,19 @@ def main():
                 # [ Option 6: Config file manager ] #
                 # ================================= #
                 elif user_input == "6":
-                    print(prefix + "Backing up current config file...", end="")
-                    os.rename("user_config.ini", f"user_config_{configuration.config_version}_BACKUP.ini")
-                    print("Done!")
-                    print(prefix + "Running reconfiguration on latest config file version...")
-                    configuration()
-                    # print(prefix + "Returning to main menu in 5 seconds...")
-                    # time.sleep(5)
+                    try:
+                        print(prefix + "Backing up current config file...")
+                        os.rename("user_config.ini", f"user_config_{configuration.config_version}_BACKUP.ini")
+                        print(prefix + "Running reconfiguration on latest config file version...")
+                        configuration()
+
+                    except FileExistsError:
+                        print(prefix + f"You already have a backup of {configuration.config_version}. Removing old...")
+                        os.remove(f"user_config_{configuration.config_version}_BACKUP.ini")
+                        os.rename("user_config.ini", f"user_config_{configuration.config_version}_BACKUP.ini")
+                        print(prefix + "Running reconfiguration on latest config file version...")
+                        configuration()
+
                     clear_screen()
                     break
 
@@ -302,16 +312,16 @@ def main():
                     config.read("user_config.ini")
                     latest_build = get_latest_build_version(user_input)
                     print("\n" + prefix + "Server version: " + user_input + " Selected.")
-                    print(prefix + "Latest build for Server version: " + user_input + " is " + latest_build)
+                    print(prefix + "Latest build for Server version: " + user_input + " is " + str(latest_build))
 
                     try:
                         if "No jar found." in print_menu.jar_files:
                             config['Server Settings'][user_input] = "0"
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
-                        if latest_build <= config['Server Settings'][user_input]:
+                        if latest_build <= int(config['Server Settings'][user_input]):
                             print(prefix + "Your current build is the latest build. [Current: " +
-                                  config['Server Settings'][user_input] + " | Latest: " + latest_build + "]")
+                                  config['Server Settings'][user_input] + " | Latest: " + str(latest_build) + "]")
                             print(prefix + "No action required, you're running the latest build.")
 
                             counter = 5
@@ -331,7 +341,7 @@ def main():
                         else:
                             print(prefix + "Appending build version to config file...", end="")
 
-                            config['Server Settings'][user_input] = latest_build
+                            config['Server Settings'][user_input] = str(latest_build)
                             with open("user_config.ini", "w+") as configfile:
                                 config.write(configfile)
                             print("Done!")

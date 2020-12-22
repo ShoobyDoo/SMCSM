@@ -34,11 +34,11 @@ def check_prerequisite(package):
             if user_input == 'y':
                 print("Installing " + package + " via pip...", end="")
                 install([package])
-                print("Done!\nPlease restart the program.")
+                print("Done!")
                 counter = 4
                 for count in range(3):
                     counter -= 1
-                    print("Exiting in..." + str(counter), end="\r")
+                    print("Restarting in..." + str(counter), end="\r")
                     time.sleep(1)
                 break
 

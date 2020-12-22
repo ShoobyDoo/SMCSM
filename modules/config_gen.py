@@ -5,7 +5,6 @@
 import configparser
 import os
 import time
-import glob
 
 prefix = "[SMCSM] » "
 
