@@ -586,32 +586,44 @@ def main():
                                 counter += 1
 
                                 if zips.startswith("(W) "):
-                                    backup_type = r" | Type:[Worlds Only]"
+                                    backup_type = " | Type:[Worlds Only]"
                                 elif zips.startswith("(F) "):
-                                    backup_type = r" | Type:[Full Backup]"
+                                    backup_type = " | Type:[Full Backup]"
                                 else:
-                                    backup_type = r" | Type:[Unrecognized Backup]"
+                                    backup_type = " | Type:[Unrecognized Backup/Zip]"
 
                                 # <----[Processing Date/Time]----> #
-                                zip_data = zips.split("_")  # (1) 2020-07-28 | (2) PM7-08-24.zip
-                                zip_date = zip_data[1].split("-")  # (0) 2020 year | (1) 07 month | (2) 28 day
+                                try:
+                                    zip_data = zips.split("_")  # (1) 2020-07-28 | (2) PM7-08-24.zip
+                                    zip_date = zip_data[1].split("-")  # (0) 2020 year | (1) 07 month | (2) 28 day
 
-                                zip_time = zip_data[2].split(".zip")  # zip_time[1] = PM7-08-24
-                                zip_time = zip_time[0].split("-")
-                                # <----[Processing Date/Time]----> #
+                                    zip_time = zip_data[2].split(".zip")  # zip_time[1] = PM7-08-24
+                                    zip_time = zip_time[0].split("-")
+                                    # <----[Processing Date/Time]----> #
 
-                                # <----[Formatted Date]----> #
-                                zip_year = zip_date[0]
-                                zip_month = zip_date[1]
-                                zip_day = zip_date[2]
-                                # <----[Formatted Date]----> #
+                                    # <----[Formatted Date]----> #
+                                    zip_year = zip_date[0]
+                                    zip_month = zip_date[1]
+                                    zip_day = zip_date[2]
+                                    # <----[Formatted Date]----> #
 
-                                # <----[Formatted Time]----> #
-                                zip_time_period = zip_time[0]
-                                zip_hour = zip_time[1]
-                                zip_minute = zip_time[2]
-                                zip_second = zip_time[3]
-                                # <----[Formatted Time]----> #
+                                    # <----[Formatted Time]----> #
+                                    zip_time_period = zip_time[0]
+                                    zip_hour = zip_time[1]
+                                    zip_minute = zip_time[2]
+                                    # zip_second = zip_time[3]
+                                    # <----[Formatted Time]----> #
+                                
+                                except Exception:
+                                    zip_year = "Null"
+                                    zip_month = "Null"
+                                    zip_day = "Null"
+
+                                    zip_hour = "Null"
+                                    zip_minute = "Null"
+                                    # zip_second = "NULL"
+
+                                    zip_time_period = "Null"
 
                                 if zip_month == "01":
                                     zip_month = "  January"
@@ -637,13 +649,17 @@ def main():
                                     zip_month = " November"
                                 elif zip_month == "12":
                                     zip_month = " December"
+                                else:
+                                    zip_month = " Null"
 
                                 zip_metadata = f" | Date:[{zip_month} {zip_day}, {zip_year}]" \
                                                f" | Time:[{zip_hour}:{zip_minute} {zip_time_period}]"
 
-                                if zips == backup_zips[-1]:
-                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata +
-                                          " (Latest)")
+                                list_of_zips = glob.glob('*.zip')
+                                latest_zip = max(list_of_zips, key=os.path.getctime)
+
+                                if zips == latest_zip:
+                                    print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata + " (Latest)")
                                 else:
                                     print("[" + str(counter) + "] » " + zips + backup_type + zip_metadata)
 
