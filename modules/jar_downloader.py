@@ -34,5 +34,3 @@ def get_server_jar_versions():
         print(versions, end=", ")
         counter += 1
     print("\b\b]")
-
-

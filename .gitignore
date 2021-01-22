@@ -132,3 +132,23 @@ user_config*.ini
 
 # User backups
 *.zip
+
+# Minecraft stuff
+cache/*
+logs/*
+plugins/*
+world*/*
+banned-ips.JSON
+banned-players.JSON
+bukkit.yml
+commands.yml
+eula.txt
+help.yml
+ops.JSON
+paper.yml
+server*.jar
+server.properties
+spigot.yml
+version_history.JSON
+whitelist.JSON
+*.jar

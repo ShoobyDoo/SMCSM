@@ -10,7 +10,7 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.9-Pre6'
+__version__ = '1.0.9-Pre7'
 
 # Cheeky one liner :^)
 pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -107,8 +107,12 @@ def print_menu():
 
     # Small check to ensure ok_status and jar is in date
     if ok_status and not out_of_date:
-        suffix = "[OK]"
-        server_jar_manager = f"Server Jar Manager (Running latest build for version {print_menu.mc_version}!)"
+        for jars in print_menu.jar_files:
+            if 'server' in jars:
+                suffix = "[OK]"
+            else:
+                suffix = "[WARN: Is this a server jar?]"
+        server_jar_manager = f"Server Jar Manager (Running latest build ({paper_build}) for version {print_menu.mc_version}!)"
 
     # If not, notify user that jar is out of date
     else:

@@ -322,9 +322,8 @@ def server_opt():
         server_properties = 'server.properties'
         replace_key(server_properties, 'view-distance', 8)
         print(prefix + server_properties_prefix + "view-distance (10) -> (8)                                                      ",
-            end="")
+              end="")
         print('[OK]')
 
     except FileNotFoundError:
         print(prefix + "Error: Could not find server.properties file!\n")
-

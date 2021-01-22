@@ -51,9 +51,6 @@ def main():
     # Call configuration function (Check for config file)
     configuration()
 
-    # TODO: Implement some sort of version checker against config file ???
-    # check_server_version()
-
     # Main while-loop to handle menu
     while True:
         print_menu()  # Call menu function (Prints menu)
@@ -86,39 +83,44 @@ def main():
 
         # [ Option 1: Start the Server ] #
         if user_input == '1':
+            try:
+                configuration.optimized_start = configuration.optimized_start.replace("server.jar", print_menu.jar_files[0])
+                
+                if platform.system() == "Windows":
+                    print(prefix + "Current platform is Windows.")
+                    cmd_args = f'cmd /c "{str(configuration.optimized_start)}"'
 
-            if platform.system() == "Windows":
-                print(prefix + "Current platform is Windows.")
-                if "server.jar" in configuration.optimized_start:
-                    configuration.optimized_start.replace("server.jar", print_menu.jar_files[0])
-                cmd_args = f'cmd /c "{str(configuration.optimized_start)}"'
+                elif platform.system() == "Linux" or platform.system() == "Darwin":
+                    print(prefix + "Current platform is Linux/Unix.")
+                    lsh_file = os.getcwd() + "/launch.sh"
+                    cmd_args = f'{str(configuration.optimized_start)}'
 
-            elif platform.system() == "Linux" or platform.system() == "Darwin":
-                print(prefix + "Current platform is Linux/Unix.")
-                lsh_file = os.getcwd() + "/launch.sh"
-                cmd_args = f'{str(configuration.optimized_start)}'
+                    if os.path.exists(lsh_file) and os.path.getsize(lsh_file) > 0:
+                        pass
 
-                if os.path.exists(lsh_file) and os.path.getsize(lsh_file) > 0:
-                    pass
+                    else:
+                        print(prefix + "Launch.sh script not found. Generating...", end="")
+                        os.system("touch launch.sh")
+                        with open("launch.sh", "a") as launch_file:
+                            launch_file.write('#!/bin/sh\ncd \"$(dirname \"$(readlink -fn \"$0\")\")\"' + "\n" + cmd_args)
+                        print("Done.")
+
+                    cmd_args = "bash launch.sh"
 
                 else:
-                    print(prefix + "Launch.sh script not found. Generating...", end="")
-                    os.system("touch launch.sh")
-                    with open("launch.sh", "a") as launch_file:
-                        launch_file.write('#!/bin/sh\ncd \"$(dirname \"$(readlink -fn \"$0\")\")\"' + "\n" + cmd_args)
-                    print("Done.")
+                    print(prefix + "Unsupported OS: '" + platform.system() + "'!")
+                    print(prefix + "Exiting in 5 seconds...")
+                    time.sleep(5)
+                    exit()
 
-                cmd_args = "bash launch.sh"
+                print("\n" + prefix + "Starting server with the most efficient configuration...\n")
+                os.system(cmd_args)
+                clear_screen()
 
-            else:
-                print(prefix + "Unsupported OS: '" + platform.system() + "'!")
-                print(prefix + "Exiting in 5 seconds...")
-                time.sleep(5)
-                exit()
-
-            print("\n" + prefix + "Starting server with the most efficient configuration...\n")
-            os.system(cmd_args)
-            clear_screen()
+            except KeyboardInterrupt:
+                print("\n" + prefix + "Server launch forcibly aborted.\n")
+                time.sleep(2)
+                pass
 
         # [ Option 2: Settings ] #
         elif user_input == '2':
@@ -300,20 +302,22 @@ def main():
             get_server_jar_versions()
 
             while True:
-                print("\n" + prefix + "Enter your desired server version, or simply type exit to return to the main "
-                                      "menu.")
+                print("\n" + prefix + f"Enter your desired server version, or simply type 'latest' to get the most recent version ({get_server_jar_versions.paper_jars[0]})\n          Alternatively, you can type 'exit' to return to the main menu.")
                 user_input = input(prefix)
                 if user_input == "exit":
                     clear_screen()
                     break
-
-                elif user_input in get_server_jar_versions.paper_jars:
+                    
+                elif user_input == "latest":
+                    user_input = get_server_jar_versions.paper_jars[0]
+                    
+                if user_input in get_server_jar_versions.paper_jars:
                     config = configparser.ConfigParser()
                     config.read("user_config.ini")
                     latest_build = get_latest_build_version(user_input)
                     print("\n" + prefix + "Server version: " + user_input + " Selected.")
                     print(prefix + "Latest build for Server version: " + user_input + " is " + str(latest_build))
-
+                    
                     try:
                         if "No jar found." in print_menu.jar_files:
                             config['Server Settings'][user_input] = "0"
@@ -358,15 +362,13 @@ def main():
                                 print(prefix + "Starting server for the first time to generate data...")
 
                                 try:
-                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                    server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
                                                    stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
-                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
-                                                  stdin=PIPE,
-                                                  stdout=PIPE)
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
                                     debug.kill()
 
@@ -379,13 +381,13 @@ def main():
                                 print(prefix + "Starting server to generate eula.txt...")
 
                                 try:
-                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                    server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
                                                    stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
-                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
                                                   stdin=PIPE,
                                                   stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
@@ -409,13 +411,13 @@ def main():
                                     print(prefix + "Starting server for the first time to generate data...")
 
                                     try:
-                                        server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
                                                        stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
                                                       stdin=PIPE,
                                                       stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
@@ -428,7 +430,7 @@ def main():
                         print()
                         print(prefix + "Appending build version to config file...", end="")
 
-                        config['Server Settings'][user_input] = latest_build
+                        config['Server Settings'][user_input] = str(latest_build)
                         with open("user_config.ini", "w+") as configfile:
                             config.write(configfile)
                         print("Done!")
@@ -445,13 +447,13 @@ def main():
                             print(prefix + "Starting server for the first time to generate data...\n")
 
                             try:
-                                server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE, stdout=PIPE)
+                                server = Popen(
+                                    [f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE, stdout=PIPE)
                                 server.communicate(input='stop\n'.encode())
                                 server.kill()
 
                             except:
-                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"], stdin=PIPE,
-                                              stdout=PIPE)
+                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
                                 debug.communicate(input="stop\n".encode())
                                 debug.kill()
 
@@ -464,15 +466,12 @@ def main():
                             print(prefix + "Starting server to generate eula.txt")
 
                             try:
-                                server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
-                                               stdout=PIPE)
+                                server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE, stdout=PIPE)
                                 server.communicate(input='stop\n'.encode())
                                 server.kill()
 
                             except:
-                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
-                                              stdin=PIPE,
-                                              stdout=PIPE)
+                                debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
                                 debug.communicate(input="stop\n".encode())
                                 debug.kill()
 
@@ -494,13 +493,13 @@ def main():
                                 print(prefix + "Starting server for the first time to generate data...\n")
 
                                 try:
-                                    server = Popen(["java -Xms2G -Xmx2G -jar server.jar nogui"], stdin=PIPE,
+                                    server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
                                                    stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
-                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", "server.jar", "nogui"],
+                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
                                                   stdin=PIPE,
                                                   stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
