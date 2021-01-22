@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 .idea/
 .console_history
+.vscode/
 
 # C extensions
 *.so
@@ -126,5 +127,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-user_config.ini
-user_config_1.1_BACKUP.ini
+# Config stuff
+user_config*.ini
+
+# User backups
+*.zip
