@@ -29,8 +29,8 @@
 ---
  
 ### Requirements
-* Requires [Java](https://www.java.com/en/download/).
-* Requires [Python 3.6](https://www.python.org/downloads/) or higher.
+* Requires [Java](https://www.java.com/en/download/)
+* Requires [Python 3.6](https://www.python.org/downloads/) or higher
 * Requires [PyYAML](https://pypi.org/project/PyYAML/) for server optimizer feature
 * Requires [progress](https://pypi.org/project/progress/) for progress bar when zipping backups
  
