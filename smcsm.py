@@ -132,6 +132,7 @@ def main():
                         eula = "false"
                         config = configparser.ConfigParser()
                         config.read('user_config.ini')
+                        
                         with open("eula.txt", "r") as eula_file:
                             content = eula_file.readline()
                             if content == "eula=false":
@@ -141,16 +142,22 @@ def main():
                         eula_file.close()
                     except FileNotFoundError:
                         eula = "eula.txt not found"
+                    
+                    config = configparser.ConfigParser()
+                    config.read("user_config.ini")
+                    settings_items.curr_jar = config["Server Settings"]["server jar"]
+                    if not settings_items.curr_jar:
+                        settings_items.curr_jar = print_menu.jar_files[0]
 
                     settings_items.counter = 0
                     settings_items.settings_menu_items = [
                         "Delete config",
-                        "Configure auto-start  | Current: " + config['Server Settings']['Auto Start'],
-                        "Change ram size       | Current: " + config['Server Settings']['Allocated Ram'] + "GB",
-                        "Accept EULA agreement | Current: " + eula,
+                        "Configure auto-start   | Current: " + config['Server Settings']['Auto Start'],
+                        "Change ram size        | Current: " + config['Server Settings']['Allocated Ram'] + "GB",
+                        "Accept EULA agreement  | Current: " + eula,
                         "Server Optimization",
-                        "Config Update         | Current: (" + configuration.current_config_version + ") " +
-                        configuration.config_status,
+                        "Config Update          | Current: (" + configuration.current_config_version + ") " + configuration.config_status,
+                        "Jar selector           | Current: " + settings_items.curr_jar,
                         "Return to menu"
                     ]
 
@@ -194,6 +201,7 @@ def main():
                     elif user_input == "2":
                         config = configparser.ConfigParser()
                         config.read('user_config.ini')
+                        auto_start_status = config['Server Settings']['Auto Start']
 
                         if auto_start_status == 'true':
                             print(prefix + "Would you like to disable? (Y)es/(N)o ")
@@ -220,6 +228,12 @@ def main():
 
                             else:
                                 print()
+                        
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
+                        clear_screen()
+                        settings_items()
+                        continue
 
                     # ================================================= #
                     # [ Option 3: Change ram size (ram configuration) ] #
@@ -240,6 +254,12 @@ def main():
                         configuration()
                         print(prefix + "Reload complete.\n")
 
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
+                        clear_screen()
+                        settings_items()
+                        continue
+
                     # ================================ #
                     # [ Option 4: Accept EULA option ] #
                     # ================================ #
@@ -251,6 +271,12 @@ def main():
                             eula_file.write('eula=true')
                             print("Done.\n")
                             eula_file.close()
+                        
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
+                        clear_screen()
+                        settings_items()
+                        continue
 
                     # ================================= #
                     # [ Option 5: Server Optimization ] #
@@ -258,10 +284,12 @@ def main():
                     elif user_input == "5":
                         server_opt()
                         input("\n" + prefix + "Press [ENTER] to return to the main menu.")
-                        # print(prefix + "Returning to main menu in 5 seconds...")
-                        # time.sleep(5)
+                        
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
                         clear_screen()
-                        break
+                        settings_items()
+                        continue
 
                     # ================================= #
                     # [ Option 6: Config file manager ] #
@@ -280,8 +308,48 @@ def main():
                             print(prefix + "Running reconfiguration on latest config file version...")
                             configuration()
 
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
                         clear_screen()
-                        break
+                        settings_items()
+                        continue
+                    
+                    # ========================== #
+                    # [ Option 7: Jar selector ] #
+                    # ========================== #
+                    elif user_input == "7":
+                        try:
+                            print(prefix + "Select the server jar from the list. ")
+                            counter = 0
+                            dir_jars = []
+                            for jars in glob.glob("*.jar"):
+                            # for jars in print_menu.jar_files:\
+                                dir_jars.append(jars)
+                                counter += 1
+                                print(f"{prefix}[{counter}] {jars}")
+
+                            user_input = input(prefix)
+
+                            jar_selected = dir_jars[int(user_input) - 1]
+
+                            config = configparser.ConfigParser()
+                            config.read("user_config.ini")
+                            config.set('Server Settings', 'server jar', jar_selected)
+
+                            with open("user_config.ini", "w+") as configfile:
+                                config.write(configfile)
+                            configfile.close()
+
+                        except Exception:
+                            print(prefix + "ERROR: NO SUCH JAR...")
+                            time.sleep(0.75)
+
+                        print(prefix + "Refreshing changes...")
+                        time.sleep(0.5)
+                        clear_screen()
+                        settings_items()
+                        continue
+
 
                     # [ Last Option: Exit to Main Menu ] #
                     elif user_input == str(len(settings_items.settings_menu_items)):
@@ -363,13 +431,14 @@ def main():
                                     print(prefix + "Starting server for the first time to generate data...")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                        debug = Popen(
+                                            ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
                                         debug.kill()
 
@@ -382,13 +451,13 @@ def main():
                                     print(prefix + "Starting server to generate eula.txt...")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
                                                     stdin=PIPE,
                                                     stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
@@ -412,13 +481,13 @@ def main():
                                         print(prefix + "Starting server for the first time to generate data...")
 
                                         try:
-                                            server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
+                                            server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
                                                         stdout=PIPE)
                                             server.communicate(input='stop\n'.encode())
                                             server.kill()
 
                                         except:
-                                            debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
+                                            debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
                                                         stdin=PIPE,
                                                         stdout=PIPE)
                                             debug.communicate(input="stop\n".encode())
@@ -449,12 +518,13 @@ def main():
 
                                 try:
                                     server = Popen(
-                                        [f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE, stdout=PIPE)
+                                        [f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
-                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                    debug = Popen(
+                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
                                     debug.kill()
 
@@ -467,12 +537,14 @@ def main():
                                 print(prefix + "Starting server to generate eula.txt")
 
                                 try:
-                                    server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE, stdout=PIPE)
+                                    server = Popen(
+                                        [f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
-                                    debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                    debug = Popen(
+                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
                                     debug.kill()
 
@@ -494,13 +566,13 @@ def main():
                                     print(prefix + "Starting server for the first time to generate data...\n")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {print_menu.jar_files[0]} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{print_menu.jar_files[0]}", "nogui"],
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
                                                     stdin=PIPE,
                                                     stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
@@ -783,7 +855,9 @@ def main():
                 clear_screen()
 
     except Exception as e:
-        print(f"[FATAL] A FATAL ERROR HAS OCCURRED. COPY THIS ERROR CODE AND CONTACT DOOMLAD'S SUPPORT DISCORD: {e}")
+        print(f"\n\n[FATAL] A FATAL ERROR HAS OCCURRED. COPY THIS ERROR MESSAGE AND DESCRIBE WHAT HAPPENED IN DOOMLAD'S SUPPORT DISCORD: {e}\n\n")
+        input("[FATAL] Press enter to have SMCSM try and restart itself...")
+        main()
 
 if __name__ == '__main__':
     main()

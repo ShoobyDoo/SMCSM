@@ -146,9 +146,11 @@ eula.txt
 help.yml
 ops.JSON
 paper.yml
-server*.jar
+*.jar
 server.properties
 spigot.yml
 version_history.JSON
 whitelist.JSON
 *.jar
+permissions.yml
+usercache.json

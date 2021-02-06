@@ -65,6 +65,8 @@ def server_opt():
 
     except FileNotFoundError:
         print(prefix + "Error: Could not find bukkit.yml")
+    except KeyError:
+        print('[ERROR]')
 
     try:
         # [ Spigot.yml ] #
@@ -163,6 +165,8 @@ def server_opt():
 
     except FileNotFoundError:
         print(prefix + "Error: Could not find spigot.yml")
+    except KeyError:
+        print('[ERROR]')
 
     try:
         # [ Paper.yml ] #
@@ -312,6 +316,8 @@ def server_opt():
 
     except FileNotFoundError:
         print(prefix + "Error: Could not find paper.yml\n")
+    except KeyError:
+        print('[ERROR]')
 
     try:
         # view-distance
@@ -327,3 +333,5 @@ def server_opt():
 
     except FileNotFoundError:
         print(prefix + "Error: Could not find server.properties file!\n")
+    except KeyError:
+        print('[ERROR]')
