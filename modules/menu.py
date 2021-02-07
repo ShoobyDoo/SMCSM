@@ -10,7 +10,7 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.9-Pre9'
+__version__ = '1.0.9-Pre10'
 
 # Cheeky one liner :^)
 pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -87,7 +87,7 @@ def print_menu():
             paper_build = str(build[1])  # Assign build# to var
 
             # Write the version / build information to config
-            config.set('Server Settings', print_menu.mc_version, paper_build)
+            config.set('Versions', print_menu.mc_version, paper_build)
 
             # Open config and write data in memory
             with open("user_config.ini", "w+") as configfile:

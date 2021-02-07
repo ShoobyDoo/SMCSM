@@ -115,7 +115,10 @@ def main():
                         exit()
 
                     print("\n" + prefix + "Starting server with the most efficient configuration...\n")
-                    os.system(cmd_args)
+                    try:
+                        os.system(cmd_args)
+                    except Exception as e:
+                        input(e)
                     clear_screen()
 
                 except KeyboardInterrupt:
