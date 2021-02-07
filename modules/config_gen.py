@@ -5,7 +5,6 @@
 import configparser
 import os
 import time
-from modules.menu import print_menu
 
 prefix = "[SMCSM] » "
 
@@ -80,7 +79,7 @@ def configuration(delete=False):
                                   f'-jar server.jar nogui'
 
                 config.set('Server Settings', 'Launch Args', optimized_start)
-                config.set('Server Settings', "server jar", print_menu.jar_files[0])
+                config.set('Server Settings', "server jar", "server.jar")
                 print(prefix + "Writing config...", end="")
 
                 with open("user_config.ini", "w+") as configfile:

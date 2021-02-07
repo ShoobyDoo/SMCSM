@@ -10,7 +10,7 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.9-Pre10'
+__version__ = '1.0.9-Pre11'
 
 # Cheeky one liner :^)
 pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -28,9 +28,9 @@ def print_menu():
     # If pre-release is true
     if pre_release:
         banner = \
-                "[-]--------------------------------------------[-]\n" \
+                "[-]---------------------------------------------[-]\n" \
                 "[|]---=[Simple MCServer Manager " + __version__ + "]=---[|]\n" \
-                "[-]--------------------------------------------[-]\n\n" \
+                "[-]---------------------------------------------[-]\n\n" \
                 "A simple local minecraft server management tool.\n\n" \
                 "[!] This is a pre-release version of SMCSM. For stability,\n" \
                 "[!] please download full releases. These builds are for\n" \
