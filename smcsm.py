@@ -30,7 +30,7 @@ except ModuleNotFoundError:
 
 prefix = "[SMCSM] » "
 yes_array = ['y', 'yes']
-
+global curr_jar
 
 # Main function
 def main():
@@ -58,6 +58,11 @@ def main():
             config = configparser.ConfigParser()
             config.read('user_config.ini')  # Read user config file
             auto_start_status = config['Server Settings']['Auto Start']  # Extract the auto-start condition
+
+            # Define curr_jar at program load
+            curr_jar = config["Server Settings"]["server jar"]
+            if not curr_jar:
+                curr_jar = print_menu.jar_files[0]
 
             # If auto-start condition is true, start program in 3 seconds
             if auto_start_status == 'true':
@@ -101,8 +106,8 @@ def main():
 
                         else:
                             print(prefix + "Launch.sh script not found. Generating...", end="")
-                            os.system("touch launch.sh")
-                            with open("launch.sh", "a") as launch_file:
+                            # os.system("touch launch.sh")
+                            with open("launch.sh", "a+") as launch_file:
                                 launch_file.write('#!/bin/sh\ncd \"$(dirname \"$(readlink -fn \"$0\")\")\"' + "\n" + cmd_args)
                             print("Done.")
 
@@ -148,9 +153,6 @@ def main():
                     
                     config = configparser.ConfigParser()
                     config.read("user_config.ini")
-                    settings_items.curr_jar = config["Server Settings"]["server jar"]
-                    if not settings_items.curr_jar:
-                        settings_items.curr_jar = print_menu.jar_files[0]
 
                     settings_items.counter = 0
                     settings_items.settings_menu_items = [
@@ -160,7 +162,7 @@ def main():
                         "Accept EULA agreement  | Current: " + eula,
                         "Server Optimization",
                         "Config Update          | Current: (" + configuration.current_config_version + ") " + configuration.config_status,
-                        "Jar selector           | Current: " + settings_items.curr_jar,
+                        "Jar selector           | Current: " + curr_jar,
                         "Return to menu"
                     ]
 
@@ -434,14 +436,13 @@ def main():
                                     print(prefix + "Starting server for the first time to generate data...")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(
-                                            ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"], stdin=PIPE,  stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
                                         debug.kill()
 
@@ -454,13 +455,13 @@ def main():
                                     print(prefix + "Starting server to generate eula.txt...")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"],
                                                     stdin=PIPE,
                                                     stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
@@ -484,13 +485,13 @@ def main():
                                         print(prefix + "Starting server for the first time to generate data...")
 
                                         try:
-                                            server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
+                                            server = Popen([f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE,
                                                         stdout=PIPE)
                                             server.communicate(input='stop\n'.encode())
                                             server.kill()
 
                                         except:
-                                            debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
+                                            debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"],
                                                         stdin=PIPE,
                                                         stdout=PIPE)
                                             debug.communicate(input="stop\n".encode())
@@ -518,16 +519,16 @@ def main():
 
                                 # ONCE EULA AGREEMENT IS ACCEPTED, START SERVER ONCE TO GENERATE FILES #
                                 print(prefix + "Starting server for the first time to generate data...\n")
-
+                                print(prefix + f"[DEBUG: {curr_jar}] ")
                                 try:
                                     server = Popen(
-                                        [f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
+                                        [f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
                                     debug = Popen(
-                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
                                     debug.kill()
 
@@ -541,13 +542,13 @@ def main():
 
                                 try:
                                     server = Popen(
-                                        [f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
+                                        [f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE, stdout=PIPE)
                                     server.communicate(input='stop\n'.encode())
                                     server.kill()
 
                                 except:
                                     debug = Popen(
-                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
+                                        ["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"], stdin=PIPE, stdout=PIPE)
                                     debug.communicate(input="stop\n".encode())
                                     debug.kill()
 
@@ -569,13 +570,13 @@ def main():
                                     print(prefix + "Starting server for the first time to generate data...\n")
 
                                     try:
-                                        server = Popen([f"java -Xms2G -Xmx2G -jar {settings_items.curr_jar} nogui"], stdin=PIPE,
+                                        server = Popen([f"java -Xms2G -Xmx2G -jar {curr_jar} nogui"], stdin=PIPE,
                                                     stdout=PIPE)
                                         server.communicate(input='stop\n'.encode())
                                         server.kill()
 
                                     except:
-                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{settings_items.curr_jar}", "nogui"],
+                                        debug = Popen(["java", "-Xms2G", "-Xmx2G", "-jar", f"{curr_jar}", "nogui"],
                                                     stdin=PIPE,
                                                     stdout=PIPE)
                                         debug.communicate(input="stop\n".encode())
@@ -859,8 +860,24 @@ def main():
 
     except Exception as e:
         print(f"\n\n[FATAL] A FATAL ERROR HAS OCCURRED. COPY THIS ERROR MESSAGE AND DESCRIBE WHAT HAPPENED IN DOOMLAD'S SUPPORT DISCORD: {e}\n\n")
+        # print(e.with_traceback())
         input("[FATAL] Press enter to have SMCSM try and restart itself...")
         main()
+    
+    except KeyboardInterrupt:
+        while True:
+            print(f"\n\n{prefix}KeyboardInterrupt was triggered. Did you mean to exit (1) or do you want to try and restart (2)?")
+            user_input = input(prefix)
+            if user_input.lower() == "exit" or user_input == "1":
+                exit()
+            elif user_input.lower() == "restart" or user_input == "2":
+                break
+            else:
+                print(f"\n{prefix}Invalid entry, try again.")
+                continue
+        
+        main()
+
 
 if __name__ == '__main__':
     main()
