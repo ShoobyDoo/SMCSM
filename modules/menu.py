@@ -10,7 +10,8 @@ from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
 # Global vars
-__version__ = '1.0.9-Pre12'
+vf = open("./modules/version.txt", "r")
+__version__ = (vf.read()).strip()
 
 # Cheeky one liner :^)
 pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
@@ -18,7 +19,6 @@ pre_release = True if __version__.lower().find("-pre") != -1 else False  # Wheth
 
 
 def print_menu():
-
     # Jars array
     print_menu.jar_files = []
 
@@ -138,11 +138,12 @@ def print_menu():
 
     start_server = f"Start Server ({configuration.ram}GB) (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
 
-    settings = f"Settings           (Config: {configuration.config_status})"
-    backups = f"Backups "
+    settings =  f"Settings           (Config: {configuration.config_status})"
+    backups =   f"Backups "
+    updater =   f"Smcsm Updates      (Status: PLACEHOLDER_VAR)"
     exit_code = f"Exit "
 
-    print_menu.menu_items = [start_server, settings, server_jar_manager, backups, exit_code]
+    print_menu.menu_items = [start_server, settings, server_jar_manager, backups, updater, exit_code]
     menu_counter = 0
     for item in print_menu.menu_items:
         menu_counter += 1

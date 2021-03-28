@@ -587,7 +587,6 @@ def main():
 
             # [ Option 4: Backup Manager ] #
             elif user_input == '4':
-
                 while True:
                     clear_screen()
                     config = configparser.ConfigParser()
@@ -848,6 +847,16 @@ def main():
                         continue
 
                 clear_screen()
+
+            # [ Option 5: Smcsm Updater ] #
+            elif user_input == '5':
+                while True:
+                    clear_screen()
+                    print("!-[SMCSM Updater]-!\n\n")
+
+
+            # FUNCTION FOR CHECKING UPDATES/FETCHING UPDATES #
+
 
             # [ Last Option: Exit program ] #
             elif user_input == str(len(print_menu.menu_items)):
