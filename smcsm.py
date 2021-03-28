@@ -32,10 +32,13 @@ prefix = "[SMCSM] » "
 yes_array = ['y', 'yes']
 global curr_jar
 
+
 # Main function
 def main():
     try:
+        # Set window title to SMCSM- Simple Minecraft Server Manager
         os.system("title SMCSM - Simple Minecraft Server Manager!")
+        
         # Clear screen at program start
         clear_screen()
 

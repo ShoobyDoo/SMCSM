@@ -6,6 +6,7 @@
 import configparser
 import glob
 import json
+import urllib.request
 from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
@@ -140,7 +141,7 @@ def print_menu():
 
     settings =  f"Settings           (Config: {configuration.config_status})"
     backups =   f"Backups "
-    updater =   f"Smcsm Updates      (Status: PLACEHOLDER_VAR)"
+    updater =   f"Smcsm Updates      (Status: {is_latest()})"
     exit_code = f"Exit "
 
     print_menu.menu_items = [start_server, settings, server_jar_manager, backups, updater, exit_code]
@@ -148,3 +149,21 @@ def print_menu():
     for item in print_menu.menu_items:
         menu_counter += 1
         print("[" + str(menu_counter) + "] » " + item)
+
+
+def get_latest_version():
+    master_version_raw = urllib.request.urlopen("https://raw.githubusercontent.com/Doomlad/SMCSM/master/modules/version.txt")
+    master_version = master_version_raw.read().decode('utf-8')
+
+    return master_version
+
+
+def is_latest():
+    
+    if version_checker(str())
+
+def version_checker(v):
+    return tuple(map(int, (v.split("."))))
+
+
+# versiontuple("2.3.1") > versiontuple("10.1.1")
