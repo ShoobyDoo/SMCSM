@@ -856,7 +856,8 @@ def main():
                 while True:
                     clear_screen()
                     print("!-[SMCSM Updater]-!\n\n")
-
+                    input()
+                    break
 
             # FUNCTION FOR CHECKING UPDATES/FETCHING UPDATES #
 

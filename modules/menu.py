@@ -10,16 +10,20 @@ import urllib.request
 from modules.config_gen import configuration
 from modules.jar_downloader import get_latest_build_version
 
-# Global vars
-vf = open("./modules/version.txt", "r")
-__version__ = (vf.read()).strip()
-
-# Cheeky one liner :^)
-pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
-# else: pre_release = False
-
 
 def print_menu():
+    
+    # Global vars
+    global __version__
+    global pre_release
+
+    vf = open("./modules/version.txt", "r")
+    __version__ = (vf.read()).strip()
+
+    # Cheeky one liner :^)
+    pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
+    # else: pre_release = False
+    
     # Jars array
     print_menu.jar_files = []
 
@@ -137,11 +141,15 @@ def print_menu():
     if not print_menu.jar_files[0] == jar_set:
         print_menu.jar_files[0] = jar_set
 
-    start_server = f"Start Server ({configuration.ram}GB) (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
+    if not is_latest():
+        update_status = "Up to Date!"
+    else:
+        update_status = f"Update {get_latest_version()} available."
 
+    start_server = f"Start Server ({configuration.ram}GB) (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
     settings =  f"Settings           (Config: {configuration.config_status})"
     backups =   f"Backups "
-    updater =   f"Smcsm Updates      (Status: {is_latest()})"
+    updater = f"Smcsm Updates      (Status: {update_status})"
     exit_code = f"Exit "
 
     print_menu.menu_items = [start_server, settings, server_jar_manager, backups, updater, exit_code]
@@ -156,14 +164,34 @@ def get_latest_version():
     master_version = master_version_raw.read().decode('utf-8')
 
     return master_version
+    # DEBUG OPTION
+    # return "1.5.4-Pre1"
+
+
+def version_to_tuple(version):
+    # grab_version = get_latest_version()
+    
+    fmt_tuple = version.split('.')
+    for tuple_item in fmt_tuple:
+        if '-pre' in tuple_item.lower():
+            split_tuple_pr = tuple_item.split('-Pre')
+            minor_version = split_tuple_pr[0]
+            pre_release = split_tuple_pr[1]
+            major_version = fmt_tuple[0]
+            revision_version = fmt_tuple[1]
+        else:
+            major_version = fmt_tuple[0]
+            revision_version = fmt_tuple[1]
+            minor_version = fmt_tuple[2]
+            pre_release = "0"
+
+    return major_version, revision_version, minor_version, pre_release
 
 
 def is_latest():
-    
-    if version_checker(str())
+    get_current = version_to_tuple(__version__)
+    get_latest = version_to_tuple(get_latest_version())
 
-def version_checker(v):
-    return tuple(map(int, (v.split("."))))
+    update = get_current < get_latest
 
-
-# versiontuple("2.3.1") > versiontuple("10.1.1")
+    return update
