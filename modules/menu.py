@@ -142,14 +142,14 @@ def print_menu():
         print_menu.jar_files[0] = jar_set
 
     if not is_latest():
-        update_status = "Up to Date!"
+        print_menu.update_status = "Up to Date!"
     else:
-        update_status = f"Update {get_latest_version()} available."
+        print_menu.update_status = f"Update {get_latest_version()} available."
 
     start_server = f"Start Server ({configuration.ram}GB) (Version: {print_menu.mc_version} ({print_menu.jar_files[0]})...{suffix})"
     settings =  f"Settings           (Config: {configuration.config_status})"
     backups =   f"Backups "
-    updater = f"Smcsm Updates      (Status: {update_status})"
+    updater = f"Smcsm Updates      (Status: {print_menu.update_status})"
     exit_code = f"Exit "
 
     print_menu.menu_items = [start_server, settings, server_jar_manager, backups, updater, exit_code]
@@ -161,7 +161,7 @@ def print_menu():
 
 def get_latest_version():
     master_version_raw = urllib.request.urlopen("https://raw.githubusercontent.com/Doomlad/SMCSM/master/modules/version.txt")
-    master_version = master_version_raw.read().decode('utf-8')
+    master_version = (master_version_raw.read().decode('utf-8')).strip()
 
     return master_version
     # DEBUG OPTION

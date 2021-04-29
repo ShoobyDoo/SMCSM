@@ -855,10 +855,14 @@ def main():
             elif user_input == '5':
                 while True:
                     clear_screen()
-                    print("!-[SMCSM Updater]-!\n\n")
-                    input()
-                    break
-
+                    print("!-[SMCSM Updater]-!\n")
+                    user_input = input(print_menu.update_status)
+                    if user_input == "1":
+                        break
+                    else:
+                        continue
+                
+                clear_screen()
             # FUNCTION FOR CHECKING UPDATES/FETCHING UPDATES #
 
 
