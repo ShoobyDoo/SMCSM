@@ -20,7 +20,7 @@ def print_menu():
     vf = open("./modules/version.txt", "r")
     __version__ = (vf.read()).strip()
 
-    # Cheeky one liner :^)
+    # Inline if/else
     pre_release = True if __version__.lower().find("-pre") != -1 else False  # Whether current version is a pre-release
     # else: pre_release = False
     
