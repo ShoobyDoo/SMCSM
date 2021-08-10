@@ -15,11 +15,11 @@ from subprocess import Popen, PIPE
 from modules.clear_screen import clear_screen
 from modules.config_gen import configuration
 from modules.jar_downloader import get_paper, get_latest_build_version, get_server_jar_versions
-from modules.menu import print_menu
+from modules.menu import print_menu, get_latest_version, is_latest
 from modules.prerequisites import check_prerequisite
 
 try:
-    import yaml
+    # import yaml
     from progress.bar import Bar
     from modules.server_backups import backup_manager, extract_backup, delete_server_files
     from modules.server_optimizer import server_opt
@@ -855,14 +855,14 @@ def main():
             elif user_input == '5':
                 while True:
                     clear_screen()
-                    print("!-[SMCSM Updater]-!\n")
-                    user_input = input(print_menu.update_status)
-                    if user_input == "1":
-                        break
-                    else:
-                        continue
-                
-                clear_screen()
+                    print(f"!-[SMCSM Updater]-!\n\n[Current: {print_menu.__version__} | Master: {get_latest_version()}]")
+                    user_input = input("\n" + prefix)
+
+                    
+
+                    clear_screen()
+                    break
+
             # FUNCTION FOR CHECKING UPDATES/FETCHING UPDATES #
 
 
