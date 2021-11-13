@@ -3,7 +3,7 @@
 # 07/14/2020
 
 # Beware easy_install method is deprecated. Might break at anytime...
-from setuptools.command.easy_install import main as install
+# from setuptools.command.easy_install import main as install
 import time
 
 
@@ -34,7 +34,7 @@ def check_prerequisite(package):
 
             if user_input == 'y':
                 print("Installing " + package + " via pip...", end="")
-                install([package])
+                os.system(f"pip install {package}")
                 print("Done!")
                 counter = 4
                 for count in range(3):
