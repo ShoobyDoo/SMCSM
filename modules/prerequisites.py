@@ -5,6 +5,7 @@
 # Beware easy_install method is deprecated. Might break at anytime...
 # from setuptools.command.easy_install import main as install
 import time
+import os
 
 
 def check_prerequisite(package):
